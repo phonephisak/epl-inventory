@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EPL System — ໜ້າຫຼັກ</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #1a3a5c;
+      --accent: #e8a020;
+      --bg: #0d1f35;
+      --card: #162d47;
+      --border: #1f3f60;
+      --text: #e8f0f8;
+      --muted: #7a9bbf;
+    }
+
+    body {
+      font-family: 'Noto Sans Lao', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 10% 10%, rgba(26,58,92,0.5) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 80% at 90% 90%, rgba(232,160,32,0.06) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* HEADER */
+    header {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 28px;
+      background: rgba(22,45,71,0.9);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header-logo {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--accent), #f0c050);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .header-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: 1px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .user-info {
+      text-align: right;
+    }
+
+    .user-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .user-role {
+      font-size: 12px;
+      color: var(--accent);
+    }
+
+    .btn-logout {
+      padding: 8px 16px;
+      background: rgba(224,80,80,0.15);
+      border: 1px solid rgba(224,80,80,0.3);
+      border-radius: 8px;
+      color: #e05050;
+      font-family: 'Noto Sans Lao', sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-logout:hover { background: rgba(224,80,80,0.25); }
+
+    /* MAIN */
+    main {
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+    }
+
+    .welcome-text {
+      text-align: center;
+      margin-bottom: 48px;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .welcome-text h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .welcome-text p {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* MODULE GRID */
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .module-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px 24px;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      animation: fadeUp 0.5s ease both;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .module-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.3s;
+      border-radius: 20px;
+    }
+
+    .module-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+    }
+
+    .module-card:hover::before { opacity: 1; }
+
+    /* Card colors */
+    .card-dashboard { border-color: rgba(59,130,246,0.3); }
+    .card-dashboard::before { background: linear-gradient(135deg, rgba(59,130,246,0.08), transparent); }
+    .card-dashboard:hover { border-color: rgba(59,130,246,0.6); box-shadow: 0 16px 40px rgba(59,130,246,0.15); }
+
+    .card-planning { border-color: rgba(168,85,247,0.3); }
+    .card-planning::before { background: linear-gradient(135deg, rgba(168,85,247,0.08), transparent); }
+    .card-planning:hover { border-color: rgba(168,85,247,0.6); box-shadow: 0 16px 40px rgba(168,85,247,0.15); }
+
+    .card-stock { border-color: rgba(34,197,94,0.3); }
+    .card-stock::before { background: linear-gradient(135deg, rgba(34,197,94,0.08), transparent); }
+    .card-stock:hover { border-color: rgba(34,197,94,0.6); box-shadow: 0 16px 40px rgba(34,197,94,0.15); }
+
+    .card-ng { border-color: rgba(239,68,68,0.3); }
+    .card-ng::before { background: linear-gradient(135deg, rgba(239,68,68,0.08), transparent); }
+    .card-ng:hover { border-color: rgba(239,68,68,0.6); box-shadow: 0 16px 40px rgba(239,68,68,0.15); }
+
+    .card-settings { border-color: rgba(232,160,32,0.3); }
+    .card-settings::before { background: linear-gradient(135deg, rgba(232,160,32,0.08), transparent); }
+    .card-settings:hover { border-color: rgba(232,160,32,0.6); box-shadow: 0 16px 40px rgba(232,160,32,0.15); }
+
+    /* Last row centering */
+    .module-card:nth-child(4) { grid-column: 1; }
+    .module-card:nth-child(5) { grid-column: 3; }
+
+    .module-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .module-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .module-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .module-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      margin-top: 12px;
+      font-weight: 600;
+    }
+
+    .badge-blue { background: rgba(59,130,246,0.15); color: #60a5fa; }
+    .badge-purple { background: rgba(168,85,247,0.15); color: #c084fc; }
+    .badge-green { background: rgba(34,197,94,0.15); color: #4ade80; }
+    .badge-red { background: rgba(239,68,68,0.15); color: #f87171; }
+    .badge-yellow { background: rgba(232,160,32,0.15); color: var(--accent); }
+
+    /* Stagger animation */
+    .module-card:nth-child(1) { animation-delay: 0.1s; }
+    .module-card:nth-child(2) { animation-delay: 0.15s; }
+    .module-card:nth-child(3) { animation-delay: 0.2s; }
+    .module-card:nth-child(4) { animation-delay: 0.25s; }
+    .module-card:nth-child(5) { animation-delay: 0.3s; }
+
+    /* Responsive */
+    @media (max-width: 700px) {
+      .modules-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .module-card:nth-child(4),
+      .module-card:nth-child(5) { grid-column: auto; }
+    }
+
+    @media (max-width: 480px) {
+      .modules-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-left">
+      <div class="header-logo">🏭</div>
+      <div class="header-title">EPL SYSTEM</div>
+    </div>
+    <div class="header-right">
+      <div class="user-info">
+        <div class="user-name" id="userName">—</div>
+        <div class="user-role" id="userRole">—</div>
+      </div>
+      <button class="btn-logout" onclick="logout()">ອອກຈາກລະບົບ</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="welcome-text">
+      <h1>ສະບາຍດີ, <span id="welcomeName">—</span>! 👋</h1>
+      <p>ເລືອກໂມດູນທີ່ຕ້ອງການໄດ້ເລີຍ</p>
+    </div>
+
+    <div class="modules-grid">
+      <a class="module-card card-dashboard" href="dashboard.html">
+        <span class="module-icon">📊</span>
+        <div class="module-name">Dashboard</div>
+        <div class="module-desc">ພາບລວມ, KPI, ສະຖິຕິ ແລະ ການລາຍງານ</div>
+        <span class="module-badge badge-blue">ພາບລວມ</span>
+      </a>
+
+      <a class="module-card card-planning" href="planning.html">
+        <span class="module-icon">📅</span>
+        <div class="module-name">Planning</div>
+        <div class="module-desc">ແຜນການຜະລິດ, Master Plan ແລະ Actual</div>
+        <span class="module-badge badge-purple">ວາງແຜນ</span>
+      </a>
+
+      <a class="module-card card-stock" href="stock.html">
+        <span class="module-icon">📦</span>
+        <div class="module-name">Stock</div>
+        <div class="module-desc">ສາງເຂົ້າ, ສາງອອກ ແລະ ຍອດເຫຼືອ</div>
+        <span class="module-badge badge-green">ສາງ</span>
+      </a>
+
+      <a class="module-card card-ng" href="ng.html">
+        <span class="module-icon">❌</span>
+        <div class="module-name">NG / Defect</div>
+        <div class="module-desc">ບັນທຶກ NG, ລາຍງານ ແລະ ແຍກຕາມພະແນກ</div>
+        <span class="module-badge badge-red">ຄຸນນະພາບ</span>
+      </a>
+
+      <a class="module-card card-settings" href="settings.html">
+        <span class="module-icon">⚙️</span>
+        <div class="module-name">Settings & Users</div>
+        <div class="module-desc">ຈັດການຜູ້ໃຊ້, Role ແລະ Permission</div>
+        <span class="module-badge badge-yellow">ຕັ້ງຄ່າ</span>
+      </a>
+    </div>
+  </main>
+
+  <script>
+    // Check session
+    const session = sessionStorage.getItem('epl_user');
+    if (!session) {
+      window.location.href = 'index.html';
+    } else {
+      const user = JSON.parse(session);
+      document.getElementById('userName').textContent = user.name || user.username;
+      document.getElementById('userRole').textContent = user.role?.toUpperCase();
+      document.getElementById('welcomeName').textContent = user.name || user.username;
+
+      // Hide settings if not admin/manager
+      if (!['admin', 'manager'].includes(user.role)) {
+        document.querySelector('.card-settings').style.display = 'none';
+      }
+    }
+
+    function logout() {
+      if (confirm('ທ່ານຕ້ອງການອອກຈາກລະບົບບໍ?')) {
+        sessionStorage.removeItem('epl_user');
+        window.location.href = 'index.html';
+      }
+    }
+  </script>
+</body>
+</html>

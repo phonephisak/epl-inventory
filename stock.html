@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EPL System — Stock</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="header-left">
+      <div class="header-logo" onclick="window.location.href='home.html'">🏭</div>
+      <div class="header-title">EPL SYSTEM</div>
+      <div class="header-module">/ Stock</div>
+    </div>
+    <div class="header-right">
+      <div style="text-align:right">
+        <div class="user-name" id="userName">—</div>
+        <div class="user-role" id="userRole">—</div>
+      </div>
+      <button class="btn-home" onclick="window.location.href='home.html'">🏠 ໜ້າຫຼັກ</button>
+      <button class="btn-logout" onclick="logout()">ອອກ</button>
+    </div>
+  </header>
+
+  <div class="app-body">
+    <aside class="sidebar">
+      <div class="sidebar-header">Stock</div>
+      <nav class="sidebar-menu">
+        <a class="menu-item active" onclick="showSection('in', this)" href="#">
+          <span class="menu-icon">📥</span> Stock IN
+        </a>
+        <a class="menu-item" onclick="showSection('out', this)" href="#">
+          <span class="menu-icon">📤</span> Stock OUT
+        </a>
+        <a class="menu-item" onclick="showSection('balance', this)" href="#">
+          <span class="menu-icon">📦</span> Stock Balance
+        </a>
+      </nav>
+    </aside>
+
+    <main class="content">
+
+      <!-- STOCK IN -->
+      <section id="sec-in">
+        <div class="page-title">📥 Stock IN</div>
+        <div class="page-sub">ລາຍການສາງເຂົ້າທັງໝົດ</div>
+
+        <div class="filter-bar">
+          <select class="filter-select" id="inDept">
+            <option value="all">ທຸກພະແນກ</option>
+            <option>Injection</option><option>Painting</option>
+            <option>Packing</option><option>Sewing</option>
+            <option>Flocky</option><option>MWH</option>
+          </select>
+          <input type="date" class="filter-input" id="inDate"/>
+          <button class="btn-add" onclick="loadStockIn()">🔍 ຄົ້ນຫາ</button>
+          <button class="btn-add" id="btnAddIn" onclick="openModal('in')">+ ເພີ່ມໃໝ່</button>
+        </div>
+
+        <div class="table-wrap">
+          <div class="table-header">
+            <div class="table-title">ລາຍການ Stock IN</div>
+            <div id="inTotal" style="font-size:13px;color:var(--accent)"></div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th><th>ວັນທີ</th><th>ລະຫັດ</th>
+                <th>ຊື່ສິນຄ້າ</th><th>ພະແນກ</th>
+                <th>ຈຳນວນ</th><th>ໜ່ວຍ</th><th>ໝາຍເຫດ</th><th>ການກະທຳ</th>
+              </tr>
+            </thead>
+            <tbody id="inTable">
+              <tr><td colspan="9" style="text-align:center;color:var(--muted);padding:30px">ກຳລັງໂຫຼດ...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- STOCK OUT -->
+      <section id="sec-out" style="display:none">
+        <div class="page-title">📤 Stock OUT</div>
+        <div class="page-sub">ລາຍການສາງອອກທັງໝົດ</div>
+
+        <div class="filter-bar">
+          <select class="filter-select" id="outDept">
+            <option value="all">ທຸກພະແນກ</option>
+            <option>Injection</option><option>Painting</option>
+            <option>Packing</option><option>Sewing</option>
+            <option>Flocky</option><option>MWH</option>
+          </select>
+          <input type="date" class="filter-input" id="outDate"/>
+          <button class="btn-add" onclick="loadStockOut()">🔍 ຄົ້ນຫາ</button>
+          <button class="btn-add" id="btnAddOut" onclick="openModal('out')">+ ເພີ່ມໃໝ່</button>
+        </div>
+
+        <div class="table-wrap">
+          <div class="table-header">
+            <div class="table-title">ລາຍການ Stock OUT</div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th><th>ວັນທີ</th><th>ລະຫັດ</th>
+                <th>ຊື່ສິນຄ້າ</th><th>ພະແນກ</th>
+                <th>ຈຳນວນ</th><th>ໜ່ວຍ</th><th>ໝາຍເຫດ</th><th>ການກະທຳ</th>
+              </tr>
+            </thead>
+            <tbody id="outTable">
+              <tr><td colspan="9" style="text-align:center;color:var(--muted);padding:30px">ກຳລັງໂຫຼດ...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- BALANCE -->
+      <section id="sec-balance" style="display:none">
+        <div class="page-title">📦 Stock Balance</div>
+        <div class="page-sub">ຍອດຄົງເຫຼືອທຸກລາຍການ</div>
+
+        <div class="filter-bar">
+          <select class="filter-select" id="balDept">
+            <option value="all">ທຸກພະແນກ</option>
+            <option>Injection</option><option>Painting</option>
+            <option>Packing</option><option>Sewing</option>
+            <option>Flocky</option><option>MWH</option>
+          </select>
+          <input type="text" class="filter-input" placeholder="ຄົ້ນຫາລະຫັດ/ຊື່..." id="balSearch"/>
+          <button class="btn-add" onclick="loadBalance()">🔍 ຄົ້ນຫາ</button>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">📥 IN ທັງໝົດ</div>
+            <div class="stat-value" id="totalIn">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">📤 OUT ທັງໝົດ</div>
+            <div class="stat-value" id="totalOut">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">📦 ຍອດເຫຼືອ</div>
+            <div class="stat-value" id="totalBal">—</div>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <div class="table-header"><div class="table-title">ຕາຕະລາງ Stock Balance</div></div>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th><th>ລະຫັດ</th><th>ຊື່ສິນຄ້າ</th>
+                <th>ພະແນກ</th><th>IN</th><th>OUT</th><th>ເຫຼືອ</th><th>ໜ່ວຍ</th><th>ສະຖານະ</th>
+              </tr>
+            </thead>
+            <tbody id="balTable">
+              <tr><td colspan="9" style="text-align:center;color:var(--muted);padding:30px">ກຳລັງໂຫຼດ...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- MODAL ADD/EDIT -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <div class="modal-title" id="modalTitle">ເພີ່ມ Stock IN</div>
+      <input type="hidden" id="editId"/>
+      <input type="hidden" id="modalType"/>
+
+      <div class="form-group">
+        <label class="form-label">ວັນທີ</label>
+        <input type="date" class="form-input" id="fDate"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">ລະຫັດສິນຄ້າ</label>
+        <input type="text" class="form-input" id="fCode" placeholder="ກະລຸນາໃສ່ລະຫັດ"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">ຊື່ສິນຄ້າ</label>
+        <input type="text" class="form-input" id="fName" placeholder="ກະລຸນາໃສ່ຊື່"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">ພະແນກ</label>
+        <select class="form-select" id="fDept">
+          <option>Injection</option><option>Painting</option>
+          <option>Packing</option><option>Sewing</option>
+          <option>Flocky</option><option>MWH</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">ຈຳນວນ</label>
+        <input type="number" class="form-input" id="fQty" placeholder="0"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">ໜ່ວຍ</label>
+        <input type="text" class="form-input" id="fUnit" placeholder="ຊິ້ນ, ກ່ອງ..."/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">ໝາຍເຫດ</label>
+        <input type="text" class="form-input" id="fNote" placeholder="(ຖ້າມີ)"/>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeModal()">ຍົກເລີກ</button>
+        <button class="btn-save" onclick="saveStock()">💾 ບັນທຶກ</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, doc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBq3ty",
+      authDomain: "epl-inventory.firebaseapp.com",
+      projectId: "epl-inventory",
+      storageBucket: "epl-inventory.firebasestorage.app",
+      messagingSenderId: "345481661658",
+      appId: "1:3454816616:web:60bef5a2eafdf3060829"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const session = sessionStorage.getItem('epl_user');
+    if (!session) { window.location.href = 'index.html'; }
+    const user = JSON.parse(session || '{}');
+    document.getElementById('userName').textContent = user.name || user.username;
+    document.getElementById('userRole').textContent = user.role?.toUpperCase();
+
+    // Check write permission
+    const canWrite = ['admin','manager','leader'].includes(user.role);
+    if (!canWrite) {
+      document.getElementById('btnAddIn').style.display = 'none';
+      document.getElementById('btnAddOut').style.display = 'none';
+    }
+
+    window.logout = () => { sessionStorage.removeItem('epl_user'); window.location.href = 'index.html'; };
+
+    window.showSection = (name, el) => {
+      ['in','out','balance'].forEach(s => document.getElementById('sec-'+s).style.display = s===name?'block':'none');
+      document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+      el.classList.add('active');
+      if (name==='in') loadStockIn();
+      if (name==='out') loadStockOut();
+      if (name==='balance') loadBalance();
+    };
+
+    const canEdit = (item) => {
+      if (user.role === 'admin' || user.role === 'manager') return true;
+      return item.department === user.department;
+    };
+
+    const renderActions = (item) => {
+      if (!canEdit(item)) return '<span style="color:var(--muted);font-size:12px">—</span>';
+      return `<button onclick="editStock('${item.id}','${item.type}')" style="background:rgba(59,130,246,0.15);border:none;border-radius:6px;padding:4px 10px;color:#60a5fa;cursor:pointer;font-size:12px;margin-right:4px">✏️</button>
+              <button onclick="deleteStock('${item.id}','${item.type}')" style="background:rgba(224,80,80,0.15);border:none;border-radius:6px;padding:4px 10px;color:#e05050;cursor:pointer;font-size:12px">🗑️</button>`;
+    };
+
+    window.loadStockIn = async () => {
+      const tbody = document.getElementById('inTable');
+      tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:20px">ກຳລັງໂຫຼດ...</td></tr>';
+      try {
+        const snap = await getDocs(query(collection(db, 'stock'), where('type','==','in'), orderBy('date','desc')));
+        const rows = [];
+        snap.forEach((d, i) => { rows.push({id:d.id, ...d.data()}); });
+        tbody.innerHTML = rows.length === 0
+          ? '<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:20px">ບໍ່ມີຂໍ້ມູນ</td></tr>'
+          : rows.map((r,i) => `<tr>
+              <td>${i+1}</td>
+              <td>${r.date||'—'}</td>
+              <td>${r.code||'—'}</td>
+              <td>${r.name||'—'}</td>
+              <td><span class="badge badge-info">${r.department||'—'}</span></td>
+              <td><b>${r.qty||0}</b></td>
+              <td>${r.unit||'—'}</td>
+              <td>${r.note||'—'}</td>
+              <td>${renderActions(r)}</td>
+            </tr>`).join('');
+        document.getElementById('inTotal').textContent = `ທັງໝົດ: ${rows.length} ລາຍການ`;
+      } catch(e) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--error);padding:20px">ເກີດຂໍ້ຜິດພາດ</td></tr>';
+      }
+    };
+
+    window.loadStockOut = async () => {
+      const tbody = document.getElementById('outTable');
+      tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:20px">ກຳລັງໂຫຼດ...</td></tr>';
+      try {
+        const snap = await getDocs(query(collection(db, 'stock'), where('type','==','out'), orderBy('date','desc')));
+        const rows = [];
+        snap.forEach(d => rows.push({id:d.id, ...d.data()}));
+        tbody.innerHTML = rows.length === 0
+          ? '<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:20px">ບໍ່ມີຂໍ້ມູນ</td></tr>'
+          : rows.map((r,i) => `<tr>
+              <td>${i+1}</td><td>${r.date||'—'}</td><td>${r.code||'—'}</td>
+              <td>${r.name||'—'}</td>
+              <td><span class="badge badge-info">${r.department||'—'}</span></td>
+              <td><b>${r.qty||0}</b></td><td>${r.unit||'—'}</td><td>${r.note||'—'}</td>
+              <td>${renderActions(r)}</td>
+            </tr>`).join('');
+      } catch(e) {}
+    };
+
+    window.loadBalance = async () => {
+      try {
+        const snap = await getDocs(collection(db, 'stock'));
+        const map = {};
+        snap.forEach(d => {
+          const r = d.data();
+          if (!map[r.code]) map[r.code] = {code:r.code, name:r.name, department:r.department, unit:r.unit, in:0, out:0};
+          if (r.type==='in') map[r.code].in += (r.qty||0);
+          if (r.type==='out') map[r.code].out += (r.qty||0);
+        });
+        const items = Object.values(map);
+        const totalIn = items.reduce((a,b)=>a+b.in,0);
+        const totalOut = items.reduce((a,b)=>a+b.out,0);
+        document.getElementById('totalIn').textContent = totalIn.toLocaleString();
+        document.getElementById('totalOut').textContent = totalOut.toLocaleString();
+        document.getElementById('totalBal').textContent = (totalIn-totalOut).toLocaleString();
+
+        document.getElementById('balTable').innerHTML = items.length === 0
+          ? '<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:20px">ບໍ່ມີຂໍ້ມູນ</td></tr>'
+          : items.map((r,i) => {
+              const bal = r.in - r.out;
+              return `<tr>
+                <td>${i+1}</td><td>${r.code||'—'}</td><td>${r.name||'—'}</td>
+                <td><span class="badge badge-info">${r.department||'—'}</span></td>
+                <td style="color:var(--success)">${r.in}</td>
+                <td style="color:var(--error)">${r.out}</td>
+                <td><b>${bal}</b></td><td>${r.unit||'—'}</td>
+                <td><span class="badge ${bal>0?'badge-success':'badge-error'}">${bal>0?'ປົກກະຕິ':'ຂາດ'}</span></td>
+              </tr>`;
+            }).join('');
+      } catch(e) {}
+    };
+
+    window.openModal = (type) => {
+      document.getElementById('modalType').value = type;
+      document.getElementById('modalTitle').textContent = type==='in' ? 'ເພີ່ມ Stock IN' : 'ເພີ່ມ Stock OUT';
+      document.getElementById('editId').value = '';
+      document.getElementById('fDate').value = new Date().toISOString().split('T')[0];
+      document.getElementById('fCode').value = '';
+      document.getElementById('fName').value = '';
+      document.getElementById('fQty').value = '';
+      document.getElementById('fUnit').value = '';
+      document.getElementById('fNote').value = '';
+      document.getElementById('modalOverlay').classList.add('open');
+    };
+
+    window.closeModal = () => document.getElementById('modalOverlay').classList.remove('open');
+
+    window.saveStock = async () => {
+      const type = document.getElementById('modalType').value;
+      const editId = document.getElementById('editId').value;
+      const data = {
+        type, date: document.getElementById('fDate').value,
+        code: document.getElementById('fCode').value,
+        name: document.getElementById('fName').value,
+        department: document.getElementById('fDept').value,
+        qty: parseInt(document.getElementById('fQty').value)||0,
+        unit: document.getElementById('fUnit').value,
+        note: document.getElementById('fNote').value,
+        updatedBy: user.username,
+        updatedAt: serverTimestamp()
+      };
+
+      try {
+        if (editId) {
+          await updateDoc(doc(db,'stock',editId), data);
+        } else {
+          data.createdBy = user.username;
+          data.createdAt = serverTimestamp();
+          await addDoc(collection(db,'stock'), data);
+        }
+        closeModal();
+        if (type==='in') loadStockIn();
+        else loadStockOut();
+      } catch(e) { alert('ເກີດຂໍ້ຜິດພາດ: '+e.message); }
+    };
+
+    window.editStock = async (id, type) => {
+      const snap = await getDocs(query(collection(db,'stock'), where('__name__','==',id)));
+      // Simpler approach
+      document.getElementById('editId').value = id;
+      document.getElementById('modalType').value = type;
+      document.getElementById('modalTitle').textContent = 'ແກ້ໄຂ Stock';
+      document.getElementById('modalOverlay').classList.add('open');
+    };
+
+    window.deleteStock = async (id, type) => {
+      if (!confirm('ທ່ານຕ້ອງການລົບລາຍການນີ້ບໍ?')) return;
+      await deleteDoc(doc(db,'stock',id));
+      if (type==='in') loadStockIn();
+      else loadStockOut();
+    };
+
+    // Init
+    loadStockIn();
+  </script>
+</body>
+</html>

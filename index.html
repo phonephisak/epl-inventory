@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EPL System — ເຂົ້າສູ່ລະບົບ</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #1a3a5c;
+      --accent: #e8a020;
+      --bg: #0d1f35;
+      --card: #162d47;
+      --border: #1f3f60;
+      --text: #e8f0f8;
+      --muted: #7a9bbf;
+      --error: #e05050;
+      --success: #30b87a;
+    }
+
+    body {
+      font-family: 'Noto Sans Lao', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* Background pattern */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 20%, rgba(26,58,92,0.6) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 80% at 80% 80%, rgba(232,160,32,0.08) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .grid-bg {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+
+    .login-wrap {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 420px;
+      padding: 20px;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo-area {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+
+    .logo-icon {
+      width: 72px;
+      height: 72px;
+      background: linear-gradient(135deg, var(--accent), #f0c050);
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin-bottom: 16px;
+      box-shadow: 0 8px 32px rgba(232,160,32,0.3);
+    }
+
+    .logo-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: 2px;
+    }
+
+    .logo-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 6px;
+      letter-spacing: 1px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 36px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 28px;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 16px;
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px 14px 13px 44px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-family: 'Noto Sans Lao', sans-serif;
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    input:focus {
+      border-color: var(--accent);
+      background: rgba(232,160,32,0.05);
+    }
+
+    input::placeholder { color: var(--muted); }
+
+    .btn-login {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--accent), #f0c050);
+      border: none;
+      border-radius: 12px;
+      color: #1a1a1a;
+      font-family: 'Noto Sans Lao', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: transform 0.15s, box-shadow 0.15s, opacity 0.2s;
+      box-shadow: 0 4px 16px rgba(232,160,32,0.3);
+    }
+
+    .btn-login:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(232,160,32,0.4); }
+    .btn-login:active { transform: translateY(0); }
+    .btn-login:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .alert {
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .alert.error { background: rgba(224,80,80,0.15); border: 1px solid var(--error); color: var(--error); display: block; }
+    .alert.success { background: rgba(48,184,122,0.15); border: 1px solid var(--success); color: var(--success); display: block; }
+
+    .loading {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(0,0,0,0.3);
+      border-top-color: #000;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .footer-text {
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 24px;
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-bg"></div>
+
+  <div class="login-wrap">
+    <div class="logo-area">
+      <div class="logo-icon">🏭</div>
+      <div class="logo-title">EPL SYSTEM</div>
+      <div class="logo-sub">ລະບົບຈັດການໂຮງງານ</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">ເຂົ້າສູ່ລະບົບ</div>
+
+      <div id="alert" class="alert"></div>
+
+      <div class="form-group">
+        <label>ຊື່ຜູ້ໃຊ້</label>
+        <div class="input-wrap">
+          <span class="input-icon">👤</span>
+          <input type="text" id="username" placeholder="ກະລຸນາໃສ່ຊື່ຜູ້ໃຊ້" autocomplete="off"/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>ລະຫັດຜ່ານ</label>
+        <div class="input-wrap">
+          <span class="input-icon">🔒</span>
+          <input type="password" id="password" placeholder="ກະລຸນາໃສ່ລະຫັດຜ່ານ"/>
+        </div>
+      </div>
+
+      <button class="btn-login" id="loginBtn" onclick="handleLogin()">
+        ເຂົ້າສູ່ລະບົບ
+      </button>
+    </div>
+
+    <div class="footer-text">EPL System v1.0 © 2025</div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBq3ty",
+      authDomain: "epl-inventory.firebaseapp.com",
+      databaseURL: "https://epl-inventory-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "epl-inventory",
+      storageBucket: "epl-inventory.firebasestorage.app",
+      messagingSenderId: "345481661658",
+      appId: "1:3454816616:web:60bef5a2eafdf3060829",
+      measurementId: "G-BT5F7PP54L"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Check if already logged in
+    const session = sessionStorage.getItem('epl_user');
+    if (session) window.location.href = 'home.html';
+
+    window.handleLogin = async function() {
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const btn = document.getElementById('loginBtn');
+      const alert = document.getElementById('alert');
+
+      alert.className = 'alert';
+      alert.textContent = '';
+
+      if (!username || !password) {
+        alert.className = 'alert error';
+        alert.textContent = '⚠️ ກະລຸນາໃສ່ຊື່ຜູ້ໃຊ້ ແລະ ລະຫັດຜ່ານ';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<span class="loading"></span> ກຳລັງເຂົ້າລະບົບ...';
+
+      try {
+        // Find user by username in Firestore
+        const q = query(collection(db, 'users'), where('username', '==', username));
+        const snap = await getDocs(q);
+
+        if (snap.empty) {
+          throw new Error('ບໍ່ພົບຊື່ຜູ້ໃຊ້ນີ້ໃນລະບົບ');
+        }
+
+        const userDoc = snap.docs[0];
+        const userData = userDoc.data();
+
+        // Login with Firebase Auth using email
+        await signInWithEmailAndPassword(auth, userData.email, password);
+
+        // Save session
+        sessionStorage.setItem('epl_user', JSON.stringify({
+          id: userDoc.id,
+          username: userData.username,
+          name: userData.name,
+          role: userData.role,
+          department: userData.department,
+          permissions: userData.permissions,
+          departmentAccess: userData.departmentAccess
+        }));
+
+        alert.className = 'alert success';
+        alert.textContent = '✅ ເຂົ້າລະບົບສຳເລັດ! ກຳລັງໂຫຼດ...';
+
+        setTimeout(() => window.location.href = 'home.html', 800);
+
+      } catch (err) {
+        alert.className = 'alert error';
+        alert.textContent = '❌ ' + (err.message.includes('ບໍ່ພົບ') ? err.message : 'ຊື່ຜູ້ໃຊ້ ຫຼື ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ');
+        btn.disabled = false;
+        btn.innerHTML = 'ເຂົ້າສູ່ລະບົບ';
+      }
+    };
+
+    // Enter key support
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter') handleLogin();
+    });
+  </script>
+</body>
+</html>

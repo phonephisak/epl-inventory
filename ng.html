@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EPL System — NG / Defect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-left">
+      <div class="header-logo" onclick="window.location.href='home.html'">🏭</div>
+      <div class="header-title">EPL SYSTEM</div>
+      <div class="header-module">/ NG / Defect</div>
+    </div>
+    <div class="header-right">
+      <div style="text-align:right">
+        <div class="user-name" id="userName">—</div>
+        <div class="user-role" id="userRole">—</div>
+      </div>
+      <button class="btn-home" onclick="window.location.href='home.html'">🏠 ໜ້າຫຼັກ</button>
+      <button class="btn-logout" onclick="logout()">ອອກ</button>
+    </div>
+  </header>
+
+  <div class="app-body">
+    <aside class="sidebar">
+      <div class="sidebar-header">NG / Defect</div>
+      <nav class="sidebar-menu">
+        <a class="menu-item active" onclick="showSection('entry', this)" href="#">
+          <span class="menu-icon">✏️</span> ບັນທຶກ NG
+        </a>
+        <a class="menu-item" onclick="showSection('report', this)" href="#">
+          <span class="menu-icon">📋</span> ລາຍງານ NG
+        </a>
+        <a class="menu-item" onclick="showSection('bydept', this)" href="#">
+          <span class="menu-icon">🏭</span> NG ຕາມພະແນກ
+        </a>
+      </nav>
+    </aside>
+
+    <main class="content">
+
+      <!-- NG ENTRY -->
+      <section id="sec-entry">
+        <div class="page-title">✏️ ບັນທຶກ NG</div>
+        <div class="page-sub">ບັນທຶກລາຍການ Defect ທຸກພະແນກ</div>
+
+        <div class="filter-bar">
+          <select class="filter-select" id="ngDeptFilter">
+            <option value="all">ທຸກພະແນກ</option>
+            <option>Injection</option><option>Painting</option>
+            <option>Packing</option><option>Sewing</option>
+            <option>Flocky</option><option>MWH</option>
+          </select>
+          <input type="date" class="filter-input" id="ngDateFilter"/>
+          <button class="btn-add" onclick="loadNG()">🔍 ຄົ້ນຫາ</button>
+          <button class="btn-add" id="btnAddNG" onclick="openNGModal()">+ ບັນທຶກ NG</button>
+        </div>
+
+        <div class="table-wrap">
+          <div class="table-header"><div class="table-title">ລາຍການ NG</div></div>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th><th>ວັນທີ</th><th>ພະແນກ</th>
+                <th>ລາຍການ</th><th>ປະເພດ Defect</th>
+                <th>ຈຳນວນ NG</th><th>ສາເຫດ</th><th>ການກະທຳ</th>
+              </tr>
+            </thead>
+            <tbody id="ngTable">
+              <tr><td colspan="8" style="text-align:center;color:var(--muted);padding:30px">ກຳລັງໂຫຼດ...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- NG REPORT -->
+      <section id="sec-report" style="display:none">
+        <div class="page-title">📋 ລາຍງານ NG</div>
+        <div class="page-sub">ສະຫຼຸບ NG ທັງໝົດ</div>
+
+        <div class="filter-bar">
+          <select class="filter-select">
+            <option>2025</option><option>2024</option>
+          </select>
+          <select class="filter-select">
+            <option value="all">ທຸກເດືອນ</option>
+            <option value="1">ມັງກອນ</option><option value="3">ມີນາ</option>
+          </select>
+          <button class="btn-add">🔍 ຄົ້ນຫາ</button>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">❌ NG ທັງໝົດ</div>
+            <div class="stat-value" id="ngTotal">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">🏭 ພະແນກທີ່ຫຼາຍສຸດ</div>
+            <div class="stat-value" style="font-size:18px" id="ngTopDept">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">📉 % NG Rate</div>
+            <div class="stat-value" id="ngRate">—</div>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <div class="table-header"><div class="table-title">ສະຫຼຸບ NG ຕາມປະເພດ</div></div>
+          <table>
+            <thead>
+              <tr><th>ປະເພດ Defect</th><th>ຈຳນວນ</th><th>%</th><th>ພະແນກ</th></tr>
+            </thead>
+            <tbody id="ngReportTable">
+              <tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">ກຳລັງໂຫຼດ...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- BY DEPT -->
+      <section id="sec-bydept" style="display:none">
+        <div class="page-title">🏭 NG ຕາມພະແນກ</div>
+        <div class="page-sub">ສົມທຽບ NG ແຕ່ລະພະແນກ</div>
+
+        <div class="table-wrap">
+          <div class="table-header"><div class="table-title">ສະຫຼຸບ NG ທຸກພະແນກ</div></div>
+          <table>
+            <thead>
+              <tr><th>ພະແນກ</th><th>NG ທັງໝົດ</th><th>% NG Rate</th><th>ສະຖານະ</th></tr>
+            </thead>
+            <tbody id="ngDeptTable">
+              <tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">ກຳລັງໂຫຼດ...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal-overlay" id="ngModalOverlay">
+    <div class="modal">
+      <div class="modal-title">ບັນທຶກ NG ໃໝ່</div>
+      <div class="form-group">
+        <label class="form-label">ວັນທີ</label>
+        <input type="date" class="form-input" id="ngDate"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">ພະແນກ</label>
+        <select class="form-select" id="ngDept">
+          <option>Injection</option><option>Painting</option>
+          <option>Packing</option><option>Sewing</option>
+          <option>Flocky</option><option>MWH</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">ລາຍການ/ສິນຄ້າ</label>
+        <input type="text" class="form-input" id="ngItem" placeholder="ຊື່ລາຍການ"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">ປະເພດ Defect</label>
+        <input type="text" class="form-input" id="ngType" placeholder="ຮອຍຂີດ, ສີຜິດ, ຮູບຮ່າງຜິດ..."/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">ຈຳນວນ NG</label>
+        <input type="number" class="form-input" id="ngQty" placeholder="0"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">ສາເຫດ</label>
+        <input type="text" class="form-input" id="ngCause" placeholder="ສາເຫດ..."/>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeNGModal()">ຍົກເລີກ</button>
+        <button class="btn-save" onclick="saveNG()">💾 ບັນທຶກ</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, query, orderBy, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBq3ty",
+      authDomain: "epl-inventory.firebaseapp.com",
+      projectId: "epl-inventory",
+      storageBucket: "epl-inventory.firebasestorage.app",
+      messagingSenderId: "345481661658",
+      appId: "1:3454816616:web:60bef5a2eafdf3060829"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const session = sessionStorage.getItem('epl_user');
+    if (!session) window.location.href = 'index.html';
+    const user = JSON.parse(session||'{}');
+    document.getElementById('userName').textContent = user.name||user.username;
+    document.getElementById('userRole').textContent = user.role?.toUpperCase();
+
+    window.logout = () => { sessionStorage.removeItem('epl_user'); window.location.href='index.html'; };
+
+    window.showSection = (name, el) => {
+      ['entry','report','bydept'].forEach(s => document.getElementById('sec-'+s).style.display = s===name?'block':'none');
+      document.querySelectorAll('.menu-item').forEach(m=>m.classList.remove('active'));
+      el.classList.add('active');
+    };
+
+    window.openNGModal = () => {
+      document.getElementById('ngDate').value = new Date().toISOString().split('T')[0];
+      document.getElementById('ngModalOverlay').classList.add('open');
+    };
+    window.closeNGModal = () => document.getElementById('ngModalOverlay').classList.remove('open');
+
+    window.loadNG = async () => {
+      const tbody = document.getElementById('ngTable');
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:20px">ກຳລັງໂຫຼດ...</td></tr>';
+      try {
+        const snap = await getDocs(query(collection(db,'ng'), orderBy('date','desc')));
+        const rows = [];
+        snap.forEach(d => rows.push({id:d.id,...d.data()}));
+        tbody.innerHTML = rows.length===0
+          ? '<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:20px">ບໍ່ມີຂໍ້ມູນ</td></tr>'
+          : rows.map((r,i) => {
+              const canEdit = user.role==='admin'||user.role==='manager'||r.department===user.department;
+              return `<tr>
+                <td>${i+1}</td><td>${r.date||'—'}</td>
+                <td><span class="badge badge-info">${r.department||'—'}</span></td>
+                <td>${r.item||'—'}</td>
+                <td><span class="badge badge-warning">${r.defectType||'—'}</span></td>
+                <td style="color:var(--error)"><b>${r.qty||0}</b></td>
+                <td>${r.cause||'—'}</td>
+                <td>${canEdit?`<button onclick="deleteNG('${r.id}')" style="background:rgba(224,80,80,0.15);border:none;border-radius:6px;padding:4px 10px;color:#e05050;cursor:pointer;font-size:12px">🗑️</button>`:'—'}</td>
+              </tr>`;
+            }).join('');
+      } catch(e) {}
+    };
+
+    window.saveNG = async () => {
+      const data = {
+        date: document.getElementById('ngDate').value,
+        department: document.getElementById('ngDept').value,
+        item: document.getElementById('ngItem').value,
+        defectType: document.getElementById('ngType').value,
+        qty: parseInt(document.getElementById('ngQty').value)||0,
+        cause: document.getElementById('ngCause').value,
+        createdBy: user.username,
+        createdAt: serverTimestamp()
+      };
+      try {
+        await addDoc(collection(db,'ng'), data);
+        closeNGModal();
+        loadNG();
+      } catch(e) { alert('ເກີດຂໍ້ຜິດພາດ'); }
+    };
+
+    window.deleteNG = async (id) => {
+      if (!confirm('ລົບລາຍການນີ້?')) return;
+      await deleteDoc(doc(db,'ng',id));
+      loadNG();
+    };
+
+    loadNG();
+  </script>
+</body>
+</html>

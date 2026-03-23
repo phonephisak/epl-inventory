@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EPL System — Planning</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-left">
+      <div class="header-logo" onclick="window.location.href='home.html'">🏭</div>
+      <div class="header-title">EPL SYSTEM</div>
+      <div class="header-module">/ Planning</div>
+    </div>
+    <div class="header-right">
+      <div style="text-align:right">
+        <div class="user-name" id="userName">—</div>
+        <div class="user-role" id="userRole">—</div>
+      </div>
+      <button class="btn-home" onclick="window.location.href='home.html'">🏠 ໜ້າຫຼັກ</button>
+      <button class="btn-logout" onclick="logout()">ອອກ</button>
+    </div>
+  </header>
+
+  <div class="app-body">
+    <aside class="sidebar">
+      <div class="sidebar-header">Planning</div>
+      <nav class="sidebar-menu">
+        <a class="menu-item active" onclick="showSection('master', this)" href="#">
+          <span class="menu-icon">📋</span> Master Plan
+        </a>
+        <a class="menu-item" onclick="showSection('daily', this)" href="#">
+          <span class="menu-icon">📅</span> Daily Plan
+        </a>
+        <a class="menu-item" onclick="showSection('actual', this)" href="#">
+          <span class="menu-icon">✅</span> Actual vs Plan
+        </a>
+      </nav>
+    </aside>
+
+    <main class="content">
+
+      <!-- MASTER PLAN -->
+      <section id="sec-master">
+        <div class="page-title">📋 Master Plan</div>
+        <div class="page-sub">ແຜນການຜະລິດຫຼັກ</div>
+
+        <div class="filter-bar">
+          <select class="filter-select">
+            <option>2025</option><option>2024</option>
+          </select>
+          <select class="filter-select" id="masterDept">
+            <option value="all">ທຸກພະແນກ</option>
+            <option>Injection</option><option>Painting</option>
+            <option>Packing</option><option>Sewing</option>
+            <option>Flocky</option><option>MWH</option>
+          </select>
+          <button class="btn-add" onclick="loadMasterPlan()">🔍 ຄົ້ນຫາ</button>
+          <button class="btn-add" id="btnAddPlan" onclick="openPlanModal()">+ ເພີ່ມ Plan</button>
+        </div>
+
+        <div class="table-wrap">
+          <div class="table-header"><div class="table-title">ລາຍການ Master Plan</div></div>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th><th>ລະຫັດ</th><th>ຊື່ລາຍການ</th>
+                <th>ພະແນກ</th><th>ແຜນ/ເດືອນ</th>
+                <th>ໜ່ວຍ</th><th>ສະຖານະ</th><th>ການກະທຳ</th>
+              </tr>
+            </thead>
+            <tbody id="masterTable">
+              <tr><td colspan="8" style="text-align:center;color:var(--muted);padding:30px">ກຳລັງໂຫຼດ...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- DAILY PLAN -->
+      <section id="sec-daily" style="display:none">
+        <div class="page-title">📅 Daily Plan</div>
+        <div class="page-sub">ແຜນການຜະລິດລາຍວັນ</div>
+
+        <div class="filter-bar">
+          <input type="date" class="filter-input" id="dailyDate"/>
+          <select class="filter-select" id="dailyDept">
+            <option value="all">ທຸກພະແນກ</option>
+            <option>Injection</option><option>Painting</option>
+            <option>Packing</option><option>Sewing</option>
+          </select>
+          <button class="btn-add" onclick="loadDailyPlan()">🔍 ຄົ້ນຫາ</button>
+          <button class="btn-add" onclick="openDailyModal()">+ ເພີ່ມ Daily Plan</button>
+        </div>
+
+        <div class="table-wrap">
+          <div class="table-header"><div class="table-title">ລາຍການ Daily Plan</div></div>
+          <table>
+            <thead>
+              <tr><th>#</th><th>ວັນທີ</th><th>ລາຍການ</th><th>ພະແນກ</th><th>ແຜນ</th><th>ຕົວຈິງ</th><th>%</th><th>ສະຖານະ</th></tr>
+            </thead>
+            <tbody id="dailyTable">
+              <tr><td colspan="8" style="text-align:center;color:var(--muted);padding:30px">ກຳລັງໂຫຼດ...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ACTUAL VS PLAN -->
+      <section id="sec-actual" style="display:none">
+        <div class="page-title">✅ Actual vs Plan</div>
+        <div class="page-sub">ສົມທຽບຜົນຕົວຈິງກັບແຜນ</div>
+
+        <div class="filter-bar">
+          <select class="filter-select">
+            <option>2025</option>
+          </select>
+          <select class="filter-select">
+            <option value="3">ມີນາ</option>
+            <option value="2">ກຸມພາ</option>
+            <option value="1">ມັງກອນ</option>
+          </select>
+          <select class="filter-select">
+            <option value="all">ທຸກພະແນກ</option>
+            <option>Injection</option><option>Painting</option>
+          </select>
+          <button class="btn-add">🔍 ຄົ້ນຫາ</button>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">🎯 ແຜນທັງໝົດ</div>
+            <div class="stat-value">10,000</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">✅ ຕົວຈິງ</div>
+            <div class="stat-value">9,250</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">📊 % Achieve</div>
+            <div class="stat-value" style="color:var(--success)">92.5%</div>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <div class="table-header"><div class="table-title">ສົມທຽບ Actual vs Plan ຕາມພະແນກ</div></div>
+          <table>
+            <thead>
+              <tr><th>ພະແນກ</th><th>ແຜນ</th><th>ຕົວຈິງ</th><th>% Achieve</th><th>ສະຖານະ</th></tr>
+            </thead>
+            <tbody>
+              ${[['Injection',2000,1850],['Painting',1500,1450],['Packing',2500,2300],['Sewing',1800,1700],['Flocky',1200,1100],['MWH',1000,850]].map(([d,p,a])=>`
+              <tr>
+                <td><b>${d}</b></td>
+                <td>${p.toLocaleString()}</td>
+                <td>${a.toLocaleString()}</td>
+                <td style="color:${a/p>=0.9?'var(--success)':'var(--error)'}"><b>${(a/p*100).toFixed(1)}%</b></td>
+                <td><span class="badge ${a/p>=0.9?'badge-success':'badge-warning'}">${a/p>=0.9?'ປົກກະຕິ':'ຕ່ຳກວ່າແຜນ'}</span></td>
+              </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal-overlay" id="planModalOverlay">
+    <div class="modal">
+      <div class="modal-title" id="planModalTitle">ເພີ່ມ Master Plan</div>
+      <div class="form-group">
+        <label class="form-label">ລະຫັດ</label>
+        <input type="text" class="form-input" id="pCode" placeholder="ລະຫັດ"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">ຊື່ລາຍການ</label>
+        <input type="text" class="form-input" id="pName" placeholder="ຊື່"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">ພະແນກ</label>
+        <select class="form-select" id="pDept">
+          <option>Injection</option><option>Painting</option>
+          <option>Packing</option><option>Sewing</option>
+          <option>Flocky</option><option>MWH</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">ແຜນ/ເດືອນ</label>
+        <input type="number" class="form-input" id="pTarget" placeholder="0"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">ໜ່ວຍ</label>
+        <input type="text" class="form-input" id="pUnit" placeholder="ຊິ້ນ, ກ່ອງ..."/>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closePlanModal()">ຍົກເລີກ</button>
+        <button class="btn-save" onclick="savePlan()">💾 ບັນທຶກ</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, query, orderBy, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBq3ty",
+      authDomain: "epl-inventory.firebaseapp.com",
+      projectId: "epl-inventory",
+      storageBucket: "epl-inventory.firebasestorage.app",
+      messagingSenderId: "345481661658",
+      appId: "1:3454816616:web:60bef5a2eafdf3060829"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const session = sessionStorage.getItem('epl_user');
+    if (!session) window.location.href = 'index.html';
+    const user = JSON.parse(session||'{}');
+    document.getElementById('userName').textContent = user.name||user.username;
+    document.getElementById('userRole').textContent = user.role?.toUpperCase();
+
+    // Set today's date
+    document.getElementById('dailyDate').value = new Date().toISOString().split('T')[0];
+
+    window.logout = () => { sessionStorage.removeItem('epl_user'); window.location.href='index.html'; };
+
+    window.showSection = (name, el) => {
+      ['master','daily','actual'].forEach(s=>document.getElementById('sec-'+s).style.display=s===name?'block':'none');
+      document.querySelectorAll('.menu-item').forEach(m=>m.classList.remove('active'));
+      el.classList.add('active');
+    };
+
+    window.openPlanModal = () => document.getElementById('planModalOverlay').classList.add('open');
+    window.closePlanModal = () => document.getElementById('planModalOverlay').classList.remove('open');
+    window.openDailyModal = () => alert('ຟີເຈີນີ້ຈະຖືກພັດທະນາໃນເວີຊັ່ນຕໍ່ໄປ');
+
+    window.loadMasterPlan = async () => {
+      const tbody = document.getElementById('masterTable');
+      try {
+        const snap = await getDocs(query(collection(db,'planning'), orderBy('createdAt','desc')));
+        const rows = [];
+        snap.forEach(d=>rows.push({id:d.id,...d.data()}));
+        tbody.innerHTML = rows.length===0
+          ? '<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:20px">ບໍ່ມີຂໍ້ມູນ</td></tr>'
+          : rows.map((r,i)=>`<tr>
+              <td>${i+1}</td><td>${r.code||'—'}</td><td>${r.name||'—'}</td>
+              <td><span class="badge badge-info">${r.department||'—'}</span></td>
+              <td><b>${r.target||0}</b></td><td>${r.unit||'—'}</td>
+              <td><span class="badge badge-success">ໃຊ້ງານ</span></td>
+              <td><button onclick="deletePlan('${r.id}')" style="background:rgba(224,80,80,0.15);border:none;border-radius:6px;padding:4px 10px;color:#e05050;cursor:pointer;font-size:12px">🗑️</button></td>
+            </tr>`).join('');
+      } catch(e) {}
+    };
+
+    window.loadDailyPlan = async () => {
+      document.getElementById('dailyTable').innerHTML =
+        '<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:20px">ບໍ່ມີຂໍ້ມູນ Daily Plan</td></tr>';
+    };
+
+    window.savePlan = async () => {
+      const data = {
+        code: document.getElementById('pCode').value,
+        name: document.getElementById('pName').value,
+        department: document.getElementById('pDept').value,
+        target: parseInt(document.getElementById('pTarget').value)||0,
+        unit: document.getElementById('pUnit').value,
+        createdBy: user.username,
+        createdAt: serverTimestamp()
+      };
+      await addDoc(collection(db,'planning'), data);
+      closePlanModal();
+      loadMasterPlan();
+    };
+
+    window.deletePlan = async (id) => {
+      if (!confirm('ລົບລາຍການນີ້?')) return;
+      await deleteDoc(doc(db,'planning',id));
+      loadMasterPlan();
+    };
+
+    loadMasterPlan();
+  </script>
+</body>
+</html>

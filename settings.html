@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EPL System — Settings & Users</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-left">
+      <div class="header-logo" onclick="window.location.href='home.html'">🏭</div>
+      <div class="header-title">EPL SYSTEM</div>
+      <div class="header-module">/ Settings & Users</div>
+    </div>
+    <div class="header-right">
+      <div style="text-align:right">
+        <div class="user-name" id="userName">—</div>
+        <div class="user-role" id="userRole">—</div>
+      </div>
+      <button class="btn-home" onclick="window.location.href='home.html'">🏠 ໜ້າຫຼັກ</button>
+      <button class="btn-logout" onclick="logout()">ອອກ</button>
+    </div>
+  </header>
+
+  <div class="app-body">
+    <aside class="sidebar">
+      <div class="sidebar-header">Settings</div>
+      <nav class="sidebar-menu">
+        <a class="menu-item active" onclick="showSection('users', this)" href="#">
+          <span class="menu-icon">👥</span> ຈັດການ Users
+        </a>
+        <a class="menu-item" onclick="showSection('roles', this)" href="#">
+          <span class="menu-icon">🔐</span> Roles & Permissions
+        </a>
+        <a class="menu-item" onclick="showSection('departments', this)" href="#">
+          <span class="menu-icon">🏭</span> ພະແນກ
+        </a>
+      </nav>
+    </aside>
+
+    <main class="content">
+
+      <!-- USERS -->
+      <section id="sec-users">
+        <div class="page-title">👥 ຈັດການ Users</div>
+        <div class="page-sub">ເພີ່ມ, ແກ້ໄຂ, ລົບ ຜູ້ໃຊ້ງານ</div>
+
+        <div class="filter-bar">
+          <select class="filter-select" id="userRoleFilter">
+            <option value="all">ທຸກ Role</option>
+            <option value="admin">Admin</option>
+            <option value="manager">Manager</option>
+            <option value="leader">Leader</option>
+            <option value="user">User</option>
+          </select>
+          <button class="btn-add" onclick="openUserModal()">+ ເພີ່ມ User ໃໝ່</button>
+        </div>
+
+        <div class="table-wrap">
+          <div class="table-header"><div class="table-title">ລາຍຊື່ Users</div></div>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th><th>ຊື່ຜູ້ໃຊ້</th><th>ຊື່ເຕັມ</th>
+                <th>Role</th><th>ພະແນກ</th><th>Email</th><th>ການກະທຳ</th>
+              </tr>
+            </thead>
+            <tbody id="usersTable">
+              <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:30px">ກຳລັງໂຫຼດ...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ROLES -->
+      <section id="sec-roles" style="display:none">
+        <div class="page-title">🔐 Roles & Permissions</div>
+        <div class="page-sub">ກຳນົດສິດທິການໃຊ້ງານແຕ່ລະ Role</div>
+
+        <div id="permUserSelect" style="margin-bottom:20px">
+          <select class="filter-select" id="selectUserPerm" onchange="loadUserPerms()">
+            <option value="">— ເລືອກ User —</option>
+          </select>
+        </div>
+
+        <div id="permEditor" style="display:none">
+          <div class="table-wrap" style="margin-bottom:20px">
+            <div class="table-header"><div class="table-title">Permission ຕາມ Module</div></div>
+            <table>
+              <thead>
+                <tr><th>Module</th><th>ອ່ານ</th><th>ຂຽນ</th><th>ແກ້ໄຂ</th><th>ລົບ</th></tr>
+              </thead>
+              <tbody id="modulePermTable"></tbody>
+            </table>
+          </div>
+
+          <div class="table-wrap">
+            <div class="table-header"><div class="table-title">Permission ຕາມພະແນກ</div></div>
+            <table>
+              <thead>
+                <tr><th>ພະແນກ</th><th>ອ່ານ</th><th>ຂຽນ</th><th>ແກ້ໄຂ</th><th>ລົບ</th></tr>
+              </thead>
+              <tbody id="deptPermTable"></tbody>
+            </table>
+          </div>
+
+          <div style="margin-top:16px;text-align:right">
+            <button class="btn-save" onclick="savePerms()">💾 ບັນທຶກ Permission</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- DEPARTMENTS -->
+      <section id="sec-departments" style="display:none">
+        <div class="page-title">🏭 ພະແນກ</div>
+        <div class="page-sub">ລາຍຊື່ພະແນກທັງໝົດ</div>
+
+        <div class="table-wrap">
+          <div class="table-header">
+            <div class="table-title">ລາຍຊື່ພະແນກ</div>
+          </div>
+          <table>
+            <thead><tr><th>#</th><th>ຊື່ພະແນກ</th><th>ສະຖານະ</th></tr></thead>
+            <tbody>
+              ${['Injection','Painting','Packing','Sewing','Flocky','MWH'].map((d,i)=>`
+              <tr>
+                <td>${i+1}</td>
+                <td><b>${d}</b></td>
+                <td><span class="badge badge-success">ໃຊ້ງານ</span></td>
+              </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- USER MODAL -->
+  <div class="modal-overlay" id="userModalOverlay">
+    <div class="modal">
+      <div class="modal-title" id="userModalTitle">ເພີ່ມ User ໃໝ່</div>
+      <input type="hidden" id="editUserId"/>
+      <div class="form-group">
+        <label class="form-label">ຊື່ຜູ້ໃຊ້ (Username)</label>
+        <input type="text" class="form-input" id="fUsername" placeholder="username"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">ຊື່ເຕັມ</label>
+        <input type="text" class="form-input" id="fFullname" placeholder="ຊື່ ແລະ ນາມສະກຸນ"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-input" id="fEmail" placeholder="example@email.com"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">ລະຫັດຜ່ານ</label>
+        <input type="password" class="form-input" id="fPass" placeholder="ຢ່າງໜ້ອຍ 6 ຕົວ"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Role</label>
+        <select class="form-select" id="fRole">
+          <option value="admin">Admin</option>
+          <option value="manager">Manager</option>
+          <option value="leader">Leader</option>
+          <option value="user">User</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">ພະແນກ</label>
+        <select class="form-select" id="fUserDept">
+          <option value="ALL">ທຸກພະແນກ (Admin/Manager)</option>
+          <option>Injection</option><option>Painting</option>
+          <option>Packing</option><option>Sewing</option>
+          <option>Flocky</option><option>MWH</option>
+        </select>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeUserModal()">ຍົກເລີກ</button>
+        <button class="btn-save" onclick="saveUser()">💾 ບັນທຶກ</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBq3ty",
+      authDomain: "epl-inventory.firebaseapp.com",
+      projectId: "epl-inventory",
+      storageBucket: "epl-inventory.firebasestorage.app",
+      messagingSenderId: "345481661658",
+      appId: "1:3454816616:web:60bef5a2eafdf3060829"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const session = sessionStorage.getItem('epl_user');
+    if (!session) window.location.href = 'index.html';
+    const user = JSON.parse(session||'{}');
+    if (!['admin','manager'].includes(user.role)) window.location.href = 'home.html';
+
+    document.getElementById('userName').textContent = user.name||user.username;
+    document.getElementById('userRole').textContent = user.role?.toUpperCase();
+
+    window.logout = () => { sessionStorage.removeItem('epl_user'); window.location.href='index.html'; };
+
+    window.showSection = (name, el) => {
+      ['users','roles','departments'].forEach(s => document.getElementById('sec-'+s).style.display = s===name?'block':'none');
+      document.querySelectorAll('.menu-item').forEach(m=>m.classList.remove('active'));
+      el.classList.add('active');
+      if (name==='roles') loadUsersForPerm();
+    };
+
+    const MODULES = ['dashboard','planning','stock','ng','settings'];
+    const DEPTS = ['Injection','Painting','Packing','Sewing','Flocky','MWH'];
+    const ACTIONS = ['read','write','edit','delete'];
+    const ROLE_BADGES = { admin:'badge-warning', manager:'badge-info', leader:'badge-success', user:'badge-error' };
+
+    window.loadUsers = async () => {
+      const tbody = document.getElementById('usersTable');
+      try {
+        const snap = await getDocs(collection(db,'users'));
+        const rows = [];
+        snap.forEach(d => rows.push({id:d.id,...d.data()}));
+
+        // Populate perm dropdown
+        const sel = document.getElementById('selectUserPerm');
+        sel.innerHTML = '<option value="">— ເລືອກ User —</option>' +
+          rows.map(r=>`<option value="${r.id}">${r.username} (${r.role})</option>`).join('');
+
+        tbody.innerHTML = rows.length===0
+          ? '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px">ບໍ່ມີ Users</td></tr>'
+          : rows.map((r,i)=>`<tr>
+              <td>${i+1}</td>
+              <td><b>${r.username||'—'}</b></td>
+              <td>${r.name||'—'}</td>
+              <td><span class="badge ${ROLE_BADGES[r.role]||'badge-info'}">${r.role||'—'}</span></td>
+              <td>${r.department||'—'}</td>
+              <td>${r.email||'—'}</td>
+              <td>
+                <button onclick="editUser('${r.id}')" style="background:rgba(59,130,246,0.15);border:none;border-radius:6px;padding:4px 10px;color:#60a5fa;cursor:pointer;font-size:12px;margin-right:4px">✏️</button>
+                <button onclick="deleteUser('${r.id}')" style="background:rgba(224,80,80,0.15);border:none;border-radius:6px;padding:4px 10px;color:#e05050;cursor:pointer;font-size:12px">🗑️</button>
+              </td>
+            </tr>`).join('');
+      } catch(e) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--error)">ເກີດຂໍ້ຜິດພາດ</td></tr>';
+      }
+    };
+
+    window.loadUsersForPerm = loadUsers;
+
+    window.loadUserPerms = async () => {
+      const id = document.getElementById('selectUserPerm').value;
+      if (!id) { document.getElementById('permEditor').style.display='none'; return; }
+      document.getElementById('permEditor').style.display='block';
+
+      const snap = await getDocs(collection(db,'users'));
+      let userData = null;
+      snap.forEach(d => { if(d.id===id) userData={id:d.id,...d.data()}; });
+      if (!userData) return;
+
+      const perms = userData.permissions || {};
+      const deptAccess = userData.departmentAccess || {};
+
+      // Module permissions
+      document.getElementById('modulePermTable').innerHTML = MODULES.map(m=>`
+        <tr>
+          <td><b>${m.charAt(0).toUpperCase()+m.slice(1)}</b></td>
+          ${ACTIONS.map(a=>`
+            <td><input type="checkbox" id="perm_${m}_${a}" ${perms[m]?.[a]?'checked':''}/></td>
+          `).join('')}
+        </tr>`).join('');
+
+      // Department permissions
+      document.getElementById('deptPermTable').innerHTML = DEPTS.map(d=>`
+        <tr>
+          <td><b>${d}</b></td>
+          ${ACTIONS.map(a=>`
+            <td><input type="checkbox" id="dept_${d}_${a}" ${deptAccess[d]?.[a]?'checked':''}/></td>
+          `).join('')}
+        </tr>`).join('');
+    };
+
+    window.savePerms = async () => {
+      const id = document.getElementById('selectUserPerm').value;
+      if (!id) return;
+
+      const permissions = {};
+      MODULES.forEach(m => {
+        permissions[m] = {};
+        ACTIONS.forEach(a => {
+          permissions[m][a] = document.getElementById(`perm_${m}_${a}`)?.checked || false;
+        });
+      });
+
+      const departmentAccess = {};
+      DEPTS.forEach(d => {
+        departmentAccess[d] = {};
+        ACTIONS.forEach(a => {
+          departmentAccess[d][a] = document.getElementById(`dept_${d}_${a}`)?.checked || false;
+        });
+      });
+
+      await updateDoc(doc(db,'users',id), {permissions, departmentAccess});
+      alert('✅ ບັນທຶກ Permission ສຳເລັດ!');
+    };
+
+    window.openUserModal = () => {
+      document.getElementById('editUserId').value = '';
+      document.getElementById('userModalTitle').textContent = 'ເພີ່ມ User ໃໝ່';
+      document.getElementById('fUsername').value = '';
+      document.getElementById('fFullname').value = '';
+      document.getElementById('fEmail').value = '';
+      document.getElementById('fPass').value = '';
+      document.getElementById('userModalOverlay').classList.add('open');
+    };
+
+    window.closeUserModal = () => document.getElementById('userModalOverlay').classList.remove('open');
+
+    window.saveUser = async () => {
+      const username = document.getElementById('fUsername').value.trim();
+      const name = document.getElementById('fFullname').value.trim();
+      const email = document.getElementById('fEmail').value.trim();
+      const password = document.getElementById('fPass').value;
+      const role = document.getElementById('fRole').value;
+      const department = document.getElementById('fUserDept').value;
+
+      if (!username||!email||!password) { alert('ກະລຸນາໃສ່ຂໍ້ມູນໃຫ້ຄົບ'); return; }
+
+      try {
+        // Create Firebase Auth user
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+
+        // Default permissions based on role
+        const defaultPerms = {};
+        MODULES.forEach(m => {
+          defaultPerms[m] = {
+            read: true,
+            write: ['admin','manager','leader'].includes(role),
+            edit: ['admin','manager','leader'].includes(role),
+            delete: ['admin','manager'].includes(role)
+          };
+        });
+
+        const defaultDeptAccess = {};
+        DEPTS.forEach(d => {
+          defaultDeptAccess[d] = {
+            read: true,
+            write: (role==='admin'||role==='manager') ? true : d===department,
+            edit: (role==='admin'||role==='manager') ? true : d===department,
+            delete: (role==='admin'||role==='manager') ? true : d===department
+          };
+        });
+
+        await setDoc(doc(db,'users',cred.user.uid), {
+          username, name, email, role, department,
+          permissions: defaultPerms,
+          departmentAccess: defaultDeptAccess,
+          createdAt: serverTimestamp()
+        });
+
+        closeUserModal();
+        loadUsers();
+        alert('✅ ເພີ່ມ User ສຳເລັດ!');
+      } catch(e) {
+        alert('ເກີດຂໍ້ຜິດພາດ: ' + e.message);
+      }
+    };
+
+    window.deleteUser = async (id) => {
+      if (!confirm('ລົບ User ນີ້?')) return;
+      await deleteDoc(doc(db,'users',id));
+      loadUsers();
+    };
+
+    window.editUser = (id) => {
+      document.getElementById('editUserId').value = id;
+      document.getElementById('userModalTitle').textContent = 'ແກ້ໄຂ User';
+      document.getElementById('userModalOverlay').classList.add('open');
+    };
+
+    loadUsers();
+  </script>
+</body>
+</html>

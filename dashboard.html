@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EPL System — Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="header-left">
+      <div class="header-logo" onclick="window.location.href='home.html'">🏭</div>
+      <div class="header-title">EPL SYSTEM</div>
+      <div class="header-module">/ Dashboard</div>
+    </div>
+    <div class="header-right">
+      <div style="text-align:right">
+        <div class="user-name" id="userName">—</div>
+        <div class="user-role" id="userRole">—</div>
+      </div>
+      <button class="btn-home" onclick="window.location.href='home.html'">🏠 ໜ້າຫຼັກ</button>
+      <button class="btn-logout" onclick="logout()">ອອກ</button>
+    </div>
+  </header>
+
+  <div class="app-body">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-header">Dashboard</div>
+      <nav class="sidebar-menu">
+        <a class="menu-item active" onclick="showSection('yearly')" href="#">
+          <span class="menu-icon">🗓️</span> ພາບລວມປີ
+        </a>
+        <a class="menu-item" onclick="showSection('monthly')" href="#">
+          <span class="menu-icon">📅</span> ພາບລວມເດືອນ
+        </a>
+        <a class="menu-item" onclick="showSection('department')" href="#">
+          <span class="menu-icon">🏭</span> ພາບລວມພະແນກ
+        </a>
+        <a class="menu-item" onclick="showSection('compare')" href="#">
+          <span class="menu-icon">📈</span> ສົມທຽບເດືອນຕໍ່ເດືອນ
+        </a>
+      </nav>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="content">
+
+      <!-- YEARLY -->
+      <section id="sec-yearly">
+        <div class="page-title">🗓️ ພາບລວມປີ</div>
+        <div class="page-sub">ສະຫຼຸບຂໍ້ມູນ Stock ທັງປີ</div>
+
+        <div class="filter-bar">
+          <select class="filter-select" id="yearFilter" onchange="loadYearly()">
+            <option value="2025">2025</option>
+            <option value="2024">2024</option>
+          </select>
+          <select class="filter-select" id="deptYearFilter" onchange="loadYearly()">
+            <option value="all">ທຸກພະແນກ</option>
+            <option value="Injection">Injection</option>
+            <option value="Painting">Painting</option>
+            <option value="Packing">Packing</option>
+            <option value="Sewing">Sewing</option>
+            <option value="Flocky">Flocky</option>
+            <option value="MWH">MWH</option>
+          </select>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">📥 Stock IN ທັງປີ</div>
+            <div class="stat-value" id="y-in">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">📤 Stock OUT ທັງປີ</div>
+            <div class="stat-value" id="y-out">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">📦 ຍອດເຫຼືອ</div>
+            <div class="stat-value" id="y-balance">—</div>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <div class="table-header"><div class="table-title">📊 Chart ສົມທຽບ 12 ເດືອນ</div></div>
+          <div style="padding:20px"><canvas id="yearlyChart" height="100"></canvas></div>
+        </div>
+      </section>
+
+      <!-- MONTHLY -->
+      <section id="sec-monthly" style="display:none">
+        <div class="page-title">📅 ພາບລວມເດືອນ</div>
+        <div class="page-sub">ສະຫຼຸບຂໍ້ມູນ Stock ລາຍເດືອນ</div>
+
+        <div class="filter-bar">
+          <select class="filter-select" id="monthYear">
+            <option value="2025">2025</option>
+            <option value="2024">2024</option>
+          </select>
+          <select class="filter-select" id="monthFilter">
+            <option value="1">ມັງກອນ</option>
+            <option value="2">ກຸມພາ</option>
+            <option value="3">ມີນາ</option>
+            <option value="4">ເມສາ</option>
+            <option value="5">ພຶດສະພາ</option>
+            <option value="6">ມິຖຸນາ</option>
+            <option value="7">ກໍລະກົດ</option>
+            <option value="8">ສິງຫາ</option>
+            <option value="9">ກັນຍາ</option>
+            <option value="10">ຕຸລາ</option>
+            <option value="11">ພະຈິກ</option>
+            <option value="12">ທັນວາ</option>
+          </select>
+          <select class="filter-select" id="deptMonthFilter">
+            <option value="all">ທຸກພະແນກ</option>
+            <option value="Injection">Injection</option>
+            <option value="Painting">Painting</option>
+            <option value="Packing">Packing</option>
+            <option value="Sewing">Sewing</option>
+            <option value="Flocky">Flocky</option>
+            <option value="MWH">MWH</option>
+          </select>
+          <button class="btn-add" onclick="loadMonthly()">🔍 ຄົ້ນຫາ</button>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">📥 Stock IN ເດືອນນີ້</div>
+            <div class="stat-value" id="m-in">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">📤 Stock OUT ເດືອນນີ້</div>
+            <div class="stat-value" id="m-out">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">📦 ຍອດເຫຼືອ</div>
+            <div class="stat-value" id="m-balance">—</div>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <div class="table-header"><div class="table-title">📊 Chart ລາຍວັນ</div></div>
+          <div style="padding:20px"><canvas id="monthlyChart" height="100"></canvas></div>
+        </div>
+      </section>
+
+      <!-- DEPARTMENT -->
+      <section id="sec-department" style="display:none">
+        <div class="page-title">🏭 ພາບລວມພະແນກ</div>
+        <div class="page-sub">ສະຫຼຸບຂໍ້ມູນ Stock ທຸກພະແນກ</div>
+
+        <div class="filter-bar">
+          <select class="filter-select" id="deptYear">
+            <option value="2025">2025</option>
+            <option value="2024">2024</option>
+          </select>
+          <select class="filter-select" id="deptMonth2">
+            <option value="all">ທຸກເດືອນ</option>
+            <option value="1">ມັງກອນ</option>
+            <option value="2">ກຸມພາ</option>
+            <option value="3">ມີນາ</option>
+            <option value="6">ມິຖຸນາ</option>
+            <option value="12">ທັນວາ</option>
+          </select>
+          <button class="btn-add" onclick="loadDepartment()">🔍 ຄົ້ນຫາ</button>
+        </div>
+
+        <div class="table-wrap">
+          <div class="table-header"><div class="table-title">ຕາຕະລາງ IN/OUT/ເຫຼືອ ທຸກພະແນກ</div></div>
+          <table>
+            <thead>
+              <tr>
+                <th>ພະແນກ</th>
+                <th>📥 Stock IN</th>
+                <th>📤 Stock OUT</th>
+                <th>📦 ຍອດເຫຼືອ</th>
+                <th>ສະຖານະ</th>
+              </tr>
+            </thead>
+            <tbody id="deptTable">
+              <tr><td colspan="5" style="text-align:center;color:var(--muted)">ກຳລັງໂຫຼດ...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- COMPARE -->
+      <section id="sec-compare" style="display:none">
+        <div class="page-title">📈 ສົມທຽບເດືອນຕໍ່ເດືອນ</div>
+        <div class="page-sub">ສົມທຽບ Stock ລະຫວ່າງເດືອນ</div>
+
+        <div class="filter-bar">
+          <select class="filter-select" id="cmpYear">
+            <option value="2025">2025</option>
+            <option value="2024">2024</option>
+          </select>
+          <select class="filter-select" id="cmpMonth">
+            <option value="3">ມີນາ (ເດືອນນີ້)</option>
+            <option value="2">ກຸມພາ</option>
+            <option value="1">ມັງກອນ</option>
+          </select>
+          <select class="filter-select" id="cmpDept">
+            <option value="all">ທຸກພະແນກ</option>
+            <option value="Injection">Injection</option>
+            <option value="Painting">Painting</option>
+            <option value="Packing">Packing</option>
+          </select>
+          <button class="btn-add" onclick="loadCompare()">🔍 ສົມທຽບ</button>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">📥 Stock IN</div>
+            <div class="stat-value" id="c-in">—</div>
+            <div class="stat-change" id="c-in-chg">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">📤 Stock OUT</div>
+            <div class="stat-value" id="c-out">—</div>
+            <div class="stat-change" id="c-out-chg">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">📦 ຍອດເຫຼືອ</div>
+            <div class="stat-value" id="c-bal">—</div>
+            <div class="stat-change" id="c-bal-chg">—</div>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <div class="table-header"><div class="table-title">📊 Bar Chart ສົມທຽບ</div></div>
+          <div style="padding:20px"><canvas id="compareChart" height="100"></canvas></div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBq3ty",
+      authDomain: "epl-inventory.firebaseapp.com",
+      projectId: "epl-inventory",
+      storageBucket: "epl-inventory.firebasestorage.app",
+      messagingSenderId: "345481661658",
+      appId: "1:3454816616:web:60bef5a2eafdf3060829"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Check session
+    const session = sessionStorage.getItem('epl_user');
+    if (!session) { window.location.href = 'index.html'; }
+    else {
+      const user = JSON.parse(session);
+      document.getElementById('userName').textContent = user.name || user.username;
+      document.getElementById('userRole').textContent = user.role?.toUpperCase();
+    }
+
+    window.logout = () => {
+      sessionStorage.removeItem('epl_user');
+      window.location.href = 'index.html';
+    };
+
+    window.showSection = (name) => {
+      ['yearly','monthly','department','compare'].forEach(s => {
+        document.getElementById('sec-'+s).style.display = s === name ? 'block' : 'none';
+      });
+      document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+      event.target.closest('.menu-item').classList.add('active');
+    };
+
+    // Yearly Chart
+    let yearlyChartObj, monthlyChartObj, compareChartObj;
+
+    window.loadYearly = async () => {
+      const months = ['ມ.ກ','ກ.ພ','ມີ.ນ','ເມ.ສ','ພ.ພ','ມິ.ຖ','ກ.ລ','ສ.ຫ','ກ.ຍ','ຕ.ລ','ພ.ຈ','ທ.ວ'];
+      const inData = [120,150,180,140,200,160,190,170,210,130,150,180];
+      const outData = [100,130,160,120,180,140,170,150,190,110,130,160];
+
+      document.getElementById('y-in').textContent = inData.reduce((a,b)=>a+b,0).toLocaleString();
+      document.getElementById('y-out').textContent = outData.reduce((a,b)=>a+b,0).toLocaleString();
+      document.getElementById('y-balance').textContent = (inData.reduce((a,b)=>a+b,0) - outData.reduce((a,b)=>a+b,0)).toLocaleString();
+
+      if (yearlyChartObj) yearlyChartObj.destroy();
+      yearlyChartObj = new Chart(document.getElementById('yearlyChart'), {
+        type: 'bar',
+        data: {
+          labels: months,
+          datasets: [
+            { label: 'Stock IN', data: inData, backgroundColor: 'rgba(48,184,122,0.7)', borderRadius: 6 },
+            { label: 'Stock OUT', data: outData, backgroundColor: 'rgba(224,80,80,0.7)', borderRadius: 6 }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { labels: { color: '#e8f0f8' } } },
+          scales: {
+            x: { ticks: { color: '#7a9bbf' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+            y: { ticks: { color: '#7a9bbf' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+          }
+        }
+      });
+    };
+
+    window.loadDepartment = () => {
+      const depts = ['Injection','Painting','Packing','Sewing','Flocky','MWH'];
+      const tbody = document.getElementById('deptTable');
+      tbody.innerHTML = depts.map(d => {
+        const inV = Math.floor(Math.random()*500+100);
+        const outV = Math.floor(Math.random()*400+80);
+        const bal = inV - outV;
+        return `<tr>
+          <td><b>${d}</b></td>
+          <td>${inV.toLocaleString()}</td>
+          <td>${outV.toLocaleString()}</td>
+          <td>${bal.toLocaleString()}</td>
+          <td><span class="badge ${bal>0?'badge-success':'badge-error'}">${bal>0?'ປົກກະຕິ':'ຂາດ'}</span></td>
+        </tr>`;
+      }).join('');
+    };
+
+    window.loadCompare = () => {
+      const curIn = 1200, prevIn = 1000;
+      const curOut = 980, prevOut = 1100;
+      const curBal = curIn - curOut, prevBal = prevIn - prevOut;
+
+      const pct = (cur, prev) => {
+        const d = ((cur-prev)/prev*100).toFixed(1);
+        return `<span style="color:${d>0?'var(--success)':'var(--error)'}">${d>0?'▲':'▼'} ${Math.abs(d)}%</span>`;
+      };
+
+      document.getElementById('c-in').textContent = curIn.toLocaleString();
+      document.getElementById('c-out').textContent = curOut.toLocaleString();
+      document.getElementById('c-bal').textContent = curBal.toLocaleString();
+      document.getElementById('c-in-chg').innerHTML = `vs ເດືອນກ່ອນ ${prevIn.toLocaleString()} ${pct(curIn,prevIn)}`;
+      document.getElementById('c-out-chg').innerHTML = `vs ເດືອນກ່ອນ ${prevOut.toLocaleString()} ${pct(curOut,prevOut)}`;
+      document.getElementById('c-bal-chg').innerHTML = `vs ເດືອນກ່ອນ ${prevBal.toLocaleString()} ${pct(curBal,prevBal)}`;
+
+      if (compareChartObj) compareChartObj.destroy();
+      compareChartObj = new Chart(document.getElementById('compareChart'), {
+        type: 'bar',
+        data: {
+          labels: ['Stock IN', 'Stock OUT', 'ຍອດເຫຼືອ'],
+          datasets: [
+            { label: 'ເດືອນນີ້', data: [curIn, curOut, curBal], backgroundColor: 'rgba(232,160,32,0.8)', borderRadius: 6 },
+            { label: 'ເດືອນກ່ອນ', data: [prevIn, prevOut, prevBal], backgroundColor: 'rgba(122,155,191,0.5)', borderRadius: 6 }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { labels: { color: '#e8f0f8' } } },
+          scales: {
+            x: { ticks: { color: '#7a9bbf' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+            y: { ticks: { color: '#7a9bbf' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+          }
+        }
+      });
+    };
+
+    // Init
+    loadYearly();
+    loadDepartment();
+  </script>
+</body>
+</html>

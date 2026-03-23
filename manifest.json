@@ -1,0 +1,22 @@
+{
+  "name": "EPL System",
+  "short_name": "EPL",
+  "description": "ລະບົບຈັດການໂຮງງານ EPL",
+  "start_url": "/epl-inventory/index.html",
+  "display": "standalone",
+  "background_color": "#0d1f35",
+  "theme_color": "#e8a020",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "https://via.placeholder.com/192x192/e8a020/1a1a1a?text=EPL",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://via.placeholder.com/512x512/e8a020/1a1a1a?text=EPL",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
