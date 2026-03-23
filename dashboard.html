@@ -9,239 +9,244 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-
   <header class="app-header">
     <div class="header-left">
       <div class="header-logo" onclick="window.location.href='home.html'">🏭</div>
       <div class="header-title">EPL SYSTEM</div>
-      <div class="header-module">/ Dashboard</div>
+      <span style="color:#e2e8f0;margin:0 6px">/</span>
+      <div class="header-module">Dashboard</div>
     </div>
     <div class="header-right">
-      <div style="text-align:right">
-        <div class="user-name" id="userName">—</div>
-        <div class="user-role" id="userRole">—</div>
-      </div>
-      <button class="btn-home" onclick="window.location.href='home.html'">🏠 ໜ້າຫຼັກ</button>
-      <button class="btn-logout" onclick="logout()">ອອກ</button>
+      <div style="text-align:right"><div class="user-name" id="userName">—</div><div class="user-role" id="userRole">—</div></div>
+      <div class="user-avatar" id="userAv">A</div>
+      <button class="btn-sm" onclick="window.location.href='home.html'">🏠 ໜ້າຫຼັກ</button>
+      <button class="btn-sm btn-danger" onclick="logout()">ອອກ</button>
     </div>
   </header>
 
   <div class="app-body">
-    <!-- SIDEBAR -->
     <aside class="sidebar">
-      <div class="sidebar-header">Dashboard</div>
-      <nav class="sidebar-menu">
-        <a class="menu-item active" onclick="showSection('yearly')" href="#">
-          <span class="menu-icon">🗓️</span> ພາບລວມປີ
-        </a>
-        <a class="menu-item" onclick="showSection('monthly')" href="#">
-          <span class="menu-icon">📅</span> ພາບລວມເດືອນ
-        </a>
-        <a class="menu-item" onclick="showSection('department')" href="#">
-          <span class="menu-icon">🏭</span> ພາບລວມພະແນກ
-        </a>
-        <a class="menu-item" onclick="showSection('compare')" href="#">
-          <span class="menu-icon">📈</span> ສົມທຽບເດືອນຕໍ່ເດືອນ
-        </a>
-      </nav>
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-name">EPL System</div>
+        <div class="sidebar-brand-sub">Factory Management</div>
+      </div>
+
+      <span class="sidebar-label">MAIN</span>
+      <a class="menu-item active" href="dashboard.html"><span class="menu-icon">📊</span> Dashboard</a>
+
+      <span class="sidebar-label">ພະແນກ</span>
+      <div class="menu-item" onclick="toggleMenu(this)">
+        <span class="menu-icon">🏭</span> Injection
+        <span class="menu-arrow">›</span>
+      </div>
+      <div class="submenu">
+        <a class="submenu-item active" onclick="loadDept('Injection','stock')">📦 Stock</a>
+        <a class="submenu-item" onclick="loadDept('Injection','ng')">❌ NG</a>
+        <a class="submenu-item" onclick="loadDept('Injection','plan')">📅 Plan</a>
+      </div>
+
+      <div class="menu-item" onclick="toggleMenu(this)">
+        <span class="menu-icon">🎨</span> Flocky
+        <span class="menu-arrow">›</span>
+      </div>
+      <div class="submenu">
+        <a class="submenu-item" onclick="loadDept('Flocky','stock')">📦 Stock</a>
+        <a class="submenu-item" onclick="loadDept('Flocky','ng')">❌ NG</a>
+        <a class="submenu-item" onclick="loadDept('Flocky','plan')">📅 Plan</a>
+      </div>
+
+      <div class="menu-item" onclick="toggleMenu(this)">
+        <span class="menu-icon">🖌️</span> Painting
+        <span class="menu-arrow">›</span>
+      </div>
+      <div class="submenu">
+        <a class="submenu-item" onclick="loadDept('Painting','stock')">📦 Stock</a>
+        <a class="submenu-item" onclick="loadDept('Painting','ng')">❌ NG</a>
+        <a class="submenu-item" onclick="loadDept('Painting','plan')">📅 Plan</a>
+      </div>
+
+      <div class="menu-item" onclick="toggleMenu(this)">
+        <span class="menu-icon">🧵</span> Sewing
+        <span class="menu-arrow">›</span>
+      </div>
+      <div class="submenu">
+        <a class="submenu-item" onclick="loadDept('Sewing','stock')">📦 Stock</a>
+        <a class="submenu-item" onclick="loadDept('Sewing','ng')">❌ NG</a>
+        <a class="submenu-item" onclick="loadDept('Sewing','plan')">📅 Plan</a>
+      </div>
+
+      <div class="menu-item" onclick="toggleMenu(this)">
+        <span class="menu-icon">🏪</span> MWH
+        <span class="menu-arrow">›</span>
+      </div>
+      <div class="submenu">
+        <a class="submenu-item" onclick="loadDept('MWH','stock')">📦 Stock</a>
+        <a class="submenu-item" onclick="loadDept('MWH','ng')">❌ NG</a>
+        <a class="submenu-item" onclick="loadDept('MWH','plan')">📅 Plan</a>
+      </div>
+
+      <div class="menu-item" onclick="toggleMenu(this)">
+        <span class="menu-icon">📦</span> Packing
+        <span class="menu-arrow">›</span>
+      </div>
+      <div class="submenu">
+        <a class="submenu-item" onclick="loadDept('Packing','stock')">📦 Stock</a>
+        <a class="submenu-item" onclick="loadDept('Packing','ng')">❌ NG</a>
+        <a class="submenu-item" onclick="loadDept('Packing','plan')">📅 Plan</a>
+      </div>
+
+      <span class="sidebar-label">ADMIN</span>
+      <a class="menu-item" href="settings.html"><span class="menu-icon">👥</span> ຈັດການ User</a>
     </aside>
 
-    <!-- CONTENT -->
     <main class="content">
-
-      <!-- YEARLY -->
-      <section id="sec-yearly">
-        <div class="page-title">🗓️ ພາບລວມປີ</div>
-        <div class="page-sub">ສະຫຼຸບຂໍ້ມູນ Stock ທັງປີ</div>
-
-        <div class="filter-bar">
-          <select class="filter-select" id="yearFilter" onchange="loadYearly()">
-            <option value="2025">2025</option>
-            <option value="2024">2024</option>
-          </select>
-          <select class="filter-select" id="deptYearFilter" onchange="loadYearly()">
-            <option value="all">ທຸກພະແນກ</option>
-            <option value="Injection">Injection</option>
-            <option value="Painting">Painting</option>
-            <option value="Packing">Packing</option>
-            <option value="Sewing">Sewing</option>
-            <option value="Flocky">Flocky</option>
-            <option value="MWH">MWH</option>
-          </select>
-        </div>
-
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-label">📥 Stock IN ທັງປີ</div>
-            <div class="stat-value" id="y-in">—</div>
+      <!-- OVERVIEW SECTION -->
+      <div id="sec-overview">
+        <div class="page-header">
+          <div>
+            <div class="page-title">📊 Dashboard</div>
+            <div class="page-sub">ພາບລວມການດຳເນີນງານໂຮງງານ</div>
           </div>
-          <div class="stat-card">
-            <div class="stat-label">📤 Stock OUT ທັງປີ</div>
-            <div class="stat-value" id="y-out">—</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">📦 ຍອດເຫຼືອ</div>
-            <div class="stat-value" id="y-balance">—</div>
-          </div>
-        </div>
-
-        <div class="table-wrap">
-          <div class="table-header"><div class="table-title">📊 Chart ສົມທຽບ 12 ເດືອນ</div></div>
-          <div style="padding:20px"><canvas id="yearlyChart" height="100"></canvas></div>
-        </div>
-      </section>
-
-      <!-- MONTHLY -->
-      <section id="sec-monthly" style="display:none">
-        <div class="page-title">📅 ພາບລວມເດືອນ</div>
-        <div class="page-sub">ສະຫຼຸບຂໍ້ມູນ Stock ລາຍເດືອນ</div>
-
-        <div class="filter-bar">
-          <select class="filter-select" id="monthYear">
-            <option value="2025">2025</option>
-            <option value="2024">2024</option>
-          </select>
-          <select class="filter-select" id="monthFilter">
-            <option value="1">ມັງກອນ</option>
-            <option value="2">ກຸມພາ</option>
-            <option value="3">ມີນາ</option>
-            <option value="4">ເມສາ</option>
-            <option value="5">ພຶດສະພາ</option>
-            <option value="6">ມິຖຸນາ</option>
-            <option value="7">ກໍລະກົດ</option>
-            <option value="8">ສິງຫາ</option>
-            <option value="9">ກັນຍາ</option>
-            <option value="10">ຕຸລາ</option>
-            <option value="11">ພະຈິກ</option>
-            <option value="12">ທັນວາ</option>
-          </select>
-          <select class="filter-select" id="deptMonthFilter">
-            <option value="all">ທຸກພະແນກ</option>
-            <option value="Injection">Injection</option>
-            <option value="Painting">Painting</option>
-            <option value="Packing">Packing</option>
-            <option value="Sewing">Sewing</option>
-            <option value="Flocky">Flocky</option>
-            <option value="MWH">MWH</option>
-          </select>
-          <button class="btn-add" onclick="loadMonthly()">🔍 ຄົ້ນຫາ</button>
-        </div>
-
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-label">📥 Stock IN ເດືອນນີ້</div>
-            <div class="stat-value" id="m-in">—</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">📤 Stock OUT ເດືອນນີ້</div>
-            <div class="stat-value" id="m-out">—</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">📦 ຍອດເຫຼືອ</div>
-            <div class="stat-value" id="m-balance">—</div>
+          <div class="filter-bar">
+            <select class="filter-select" id="yearSel" onchange="loadOverview()">
+              <option value="2025">2025</option>
+              <option value="2024">2024</option>
+            </select>
+            <select class="filter-select" id="monthSel" onchange="loadOverview()">
+              <option value="all">ທຸກເດືອນ</option>
+              <option value="1">ມັງກອນ</option>
+              <option value="2">ກຸມພາ</option>
+              <option value="3">ມີນາ</option>
+              <option value="4">ເມສາ</option>
+              <option value="5">ພຶດສະພາ</option>
+              <option value="6">ມິຖຸນາ</option>
+              <option value="7">ກໍລະກົດ</option>
+              <option value="8">ສິງຫາ</option>
+              <option value="9">ກັນຍາ</option>
+              <option value="10">ຕຸລາ</option>
+              <option value="11">ພະຈິກ</option>
+              <option value="12">ທັນວາ</option>
+            </select>
+            <select class="filter-select" id="deptSel" onchange="loadOverview()">
+              <option value="all">ທຸກພະແນກ</option>
+              <option>Injection</option>
+              <option>Flocky</option>
+              <option>Painting</option>
+              <option>Sewing</option>
+              <option>MWH</option>
+              <option>Packing</option>
+            </select>
+            <button class="btn-secondary" onclick="loadOverview()">🔄 Refresh</button>
           </div>
         </div>
 
-        <div class="table-wrap">
-          <div class="table-header"><div class="table-title">📊 Chart ລາຍວັນ</div></div>
-          <div style="padding:20px"><canvas id="monthlyChart" height="100"></canvas></div>
+        <!-- KPI -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-icon kpi-green">📥</div>
+            <div>
+              <div class="kpi-label">Stock IN ທັງໝົດ</div>
+              <div class="kpi-value" id="kpi-in">—</div>
+              <div class="kpi-change kpi-up" id="kpi-in-chg"></div>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon kpi-red">📤</div>
+            <div>
+              <div class="kpi-label">Stock OUT ທັງໝົດ</div>
+              <div class="kpi-value" id="kpi-out">—</div>
+              <div class="kpi-change kpi-down" id="kpi-out-chg"></div>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon kpi-blue">📦</div>
+            <div>
+              <div class="kpi-label">ຍອດເຫຼືອ</div>
+              <div class="kpi-value" id="kpi-bal">—</div>
+              <div class="kpi-change" id="kpi-bal-chg"></div>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon kpi-orange">❌</div>
+            <div>
+              <div class="kpi-label">NG ທັງໝົດ</div>
+              <div class="kpi-value" id="kpi-ng">—</div>
+              <div class="kpi-change" id="kpi-ng-chg"></div>
+            </div>
+          </div>
         </div>
-      </section>
 
-      <!-- DEPARTMENT -->
-      <section id="sec-department" style="display:none">
-        <div class="page-title">🏭 ພາບລວມພະແນກ</div>
-        <div class="page-sub">ສະຫຼຸບຂໍ້ມູນ Stock ທຸກພະແນກ</div>
-
-        <div class="filter-bar">
-          <select class="filter-select" id="deptYear">
-            <option value="2025">2025</option>
-            <option value="2024">2024</option>
-          </select>
-          <select class="filter-select" id="deptMonth2">
-            <option value="all">ທຸກເດືອນ</option>
-            <option value="1">ມັງກອນ</option>
-            <option value="2">ກຸມພາ</option>
-            <option value="3">ມີນາ</option>
-            <option value="6">ມິຖຸນາ</option>
-            <option value="12">ທັນວາ</option>
-          </select>
-          <button class="btn-add" onclick="loadDepartment()">🔍 ຄົ້ນຫາ</button>
+        <!-- CHARTS ROW -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
+          <div class="chart-card">
+            <div class="chart-header">
+              <div class="chart-title">📈 Stock IN vs OUT ລາຍເດືອນ</div>
+            </div>
+            <div class="chart-body">
+              <canvas id="stockChart" height="180"></canvas>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header">
+              <div class="chart-title">🏭 Stock ຕາມພະແນກ</div>
+            </div>
+            <div class="chart-body">
+              <canvas id="deptChart" height="180"></canvas>
+            </div>
+          </div>
         </div>
 
-        <div class="table-wrap">
-          <div class="table-header"><div class="table-title">ຕາຕະລາງ IN/OUT/ເຫຼືອ ທຸກພະແນກ</div></div>
+        <!-- COMPARE TABLE -->
+        <div class="table-card">
+          <div class="table-header">
+            <div class="table-title">📊 ສົມທຽບ Stock ທຸກພະແນກ</div>
+          </div>
           <table>
             <thead>
               <tr>
                 <th>ພະແນກ</th>
-                <th>📥 Stock IN</th>
-                <th>📤 Stock OUT</th>
-                <th>📦 ຍອດເຫຼືອ</th>
+                <th>Stock IN</th>
+                <th>Stock OUT</th>
+                <th>ຍອດເຫຼືອ</th>
+                <th>NG</th>
+                <th>% NG Rate</th>
                 <th>ສະຖານະ</th>
               </tr>
             </thead>
-            <tbody id="deptTable">
-              <tr><td colspan="5" style="text-align:center;color:var(--muted)">ກຳລັງໂຫຼດ...</td></tr>
+            <tbody id="overviewTable">
+              <tr><td colspan="7" class="empty-state"><div class="empty-icon">📊</div><div class="empty-text">ກຳລັງໂຫຼດ...</div></td></tr>
             </tbody>
           </table>
         </div>
-      </section>
 
-      <!-- COMPARE -->
-      <section id="sec-compare" style="display:none">
-        <div class="page-title">📈 ສົມທຽບເດືອນຕໍ່ເດືອນ</div>
-        <div class="page-sub">ສົມທຽບ Stock ລະຫວ່າງເດືອນ</div>
-
-        <div class="filter-bar">
-          <select class="filter-select" id="cmpYear">
-            <option value="2025">2025</option>
-            <option value="2024">2024</option>
-          </select>
-          <select class="filter-select" id="cmpMonth">
-            <option value="3">ມີນາ (ເດືອນນີ້)</option>
-            <option value="2">ກຸມພາ</option>
-            <option value="1">ມັງກອນ</option>
-          </select>
-          <select class="filter-select" id="cmpDept">
-            <option value="all">ທຸກພະແນກ</option>
-            <option value="Injection">Injection</option>
-            <option value="Painting">Painting</option>
-            <option value="Packing">Packing</option>
-          </select>
-          <button class="btn-add" onclick="loadCompare()">🔍 ສົມທຽບ</button>
-        </div>
-
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-label">📥 Stock IN</div>
-            <div class="stat-value" id="c-in">—</div>
-            <div class="stat-change" id="c-in-chg">—</div>
+        <!-- MONTH COMPARE -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title">📈 ສົມທຽບເດືອນຕໍ່ເດືອນ</div>
           </div>
-          <div class="stat-card">
-            <div class="stat-label">📤 Stock OUT</div>
-            <div class="stat-value" id="c-out">—</div>
-            <div class="stat-change" id="c-out-chg">—</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">📦 ຍອດເຫຼືອ</div>
-            <div class="stat-value" id="c-bal">—</div>
-            <div class="stat-change" id="c-bal-chg">—</div>
+          <div class="chart-body">
+            <canvas id="compareChart" height="100"></canvas>
           </div>
         </div>
+      </div>
 
-        <div class="table-wrap">
-          <div class="table-header"><div class="table-title">📊 Bar Chart ສົມທຽບ</div></div>
-          <div style="padding:20px"><canvas id="compareChart" height="100"></canvas></div>
+      <!-- DEPT SECTION -->
+      <div id="sec-dept" style="display:none">
+        <div class="page-header">
+          <div>
+            <div class="page-title" id="deptTitle">—</div>
+            <div class="page-sub" id="deptSub">—</div>
+          </div>
+          <button class="btn-secondary" onclick="showOverview()">← ກັບໄປ Dashboard</button>
         </div>
-      </section>
-
+        <div id="deptContent"></div>
+      </div>
     </main>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBq3ty0rw70wGE_QxwOe3SczEfXViWxx98",
@@ -249,125 +254,242 @@
       projectId: "epl-inventory",
       storageBucket: "epl-inventory.firebasestorage.app",
       messagingSenderId: "345481661658",
-      appId: "1:3454816616:web:60bef5a2eafdf3060829"
+      appId: "1:345481661658:web:60bef5a2eafdf3060829"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Check session
     const session = sessionStorage.getItem('epl_user');
     if (!session) { window.location.href = 'index.html'; }
-    else {
-      const user = JSON.parse(session);
-      document.getElementById('userName').textContent = user.name || user.username;
-      document.getElementById('userRole').textContent = user.role?.toUpperCase();
-    }
+    const user = JSON.parse(session || '{}');
+    const name = user.name || user.username || 'User';
+    document.getElementById('userName').textContent = name;
+    document.getElementById('userRole').textContent = user.role?.toUpperCase();
+    document.getElementById('userAv').textContent = name.charAt(0).toUpperCase();
 
-    window.logout = () => {
-      sessionStorage.removeItem('epl_user');
-      window.location.href = 'index.html';
+    window.logout = () => { sessionStorage.removeItem('epl_user'); window.location.href = 'index.html'; };
+
+    window.toggleMenu = (el) => {
+      el.classList.toggle('open');
+      const sub = el.nextElementSibling;
+      if (sub) sub.classList.toggle('open');
     };
 
-    window.showSection = (name) => {
-      ['yearly','monthly','department','compare'].forEach(s => {
-        document.getElementById('sec-'+s).style.display = s === name ? 'block' : 'none';
-      });
-      document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
-      event.target.closest('.menu-item').classList.add('active');
+    window.showOverview = () => {
+      document.getElementById('sec-overview').style.display = 'block';
+      document.getElementById('sec-dept').style.display = 'none';
     };
 
-    // Yearly Chart
-    let yearlyChartObj, monthlyChartObj, compareChartObj;
+    const DEPTS = ['Injection','Flocky','Painting','Sewing','MWH','Packing'];
+    const MONTHS = ['','ມ.ກ','ກ.ພ','ມີ.ນ','ເມ.ສ','ພ.ພ','ມິ.ຖ','ກ.ລ','ສ.ຫ','ກ.ຍ','ຕ.ລ','ພ.ຈ','ທ.ວ'];
 
-    window.loadYearly = async () => {
-      const months = ['ມ.ກ','ກ.ພ','ມີ.ນ','ເມ.ສ','ພ.ພ','ມິ.ຖ','ກ.ລ','ສ.ຫ','ກ.ຍ','ຕ.ລ','ພ.ຈ','ທ.ວ'];
-      const inData = [120,150,180,140,200,160,190,170,210,130,150,180];
-      const outData = [100,130,160,120,180,140,170,150,190,110,130,160];
+    let stockChart, deptChart, compareChart;
 
-      document.getElementById('y-in').textContent = inData.reduce((a,b)=>a+b,0).toLocaleString();
-      document.getElementById('y-out').textContent = outData.reduce((a,b)=>a+b,0).toLocaleString();
-      document.getElementById('y-balance').textContent = (inData.reduce((a,b)=>a+b,0) - outData.reduce((a,b)=>a+b,0)).toLocaleString();
+    window.loadOverview = async () => {
+      try {
+        const [stockSnap, ngSnap] = await Promise.all([
+          getDocs(collection(db, 'stock')),
+          getDocs(collection(db, 'ng'))
+        ]);
 
-      if (yearlyChartObj) yearlyChartObj.destroy();
-      yearlyChartObj = new Chart(document.getElementById('yearlyChart'), {
-        type: 'bar',
-        data: {
-          labels: months,
-          datasets: [
-            { label: 'Stock IN', data: inData, backgroundColor: 'rgba(48,184,122,0.7)', borderRadius: 6 },
-            { label: 'Stock OUT', data: outData, backgroundColor: 'rgba(224,80,80,0.7)', borderRadius: 6 }
-          ]
-        },
-        options: {
-          responsive: true,
-          plugins: { legend: { labels: { color: '#e8f0f8' } } },
-          scales: {
-            x: { ticks: { color: '#7a9bbf' }, grid: { color: 'rgba(255,255,255,0.05)' } },
-            y: { ticks: { color: '#7a9bbf' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+        const stocks = [];
+        stockSnap.forEach(d => stocks.push(d.data()));
+        const ngs = [];
+        ngSnap.forEach(d => ngs.push(d.data()));
+
+        // KPI totals
+        const totalIn = stocks.filter(s => s.type === 'in').reduce((a, b) => a + (b.qty || 0), 0);
+        const totalOut = stocks.filter(s => s.type === 'out').reduce((a, b) => a + (b.qty || 0), 0);
+        const totalNG = ngs.reduce((a, b) => a + (b.qty || 0), 0);
+
+        document.getElementById('kpi-in').textContent = totalIn.toLocaleString() || '0';
+        document.getElementById('kpi-out').textContent = totalOut.toLocaleString() || '0';
+        document.getElementById('kpi-bal').textContent = (totalIn - totalOut).toLocaleString() || '0';
+        document.getElementById('kpi-ng').textContent = totalNG.toLocaleString() || '0';
+
+        // Monthly chart
+        const monthIn = Array(12).fill(0);
+        const monthOut = Array(12).fill(0);
+        stocks.forEach(s => {
+          if (!s.date) return;
+          const m = new Date(s.date).getMonth();
+          if (s.type === 'in') monthIn[m] += (s.qty || 0);
+          if (s.type === 'out') monthOut[m] += (s.qty || 0);
+        });
+
+        if (stockChart) stockChart.destroy();
+        stockChart = new Chart(document.getElementById('stockChart'), {
+          type: 'bar',
+          data: {
+            labels: MONTHS.slice(1),
+            datasets: [
+              { label: 'Stock IN', data: monthIn, backgroundColor: 'rgba(22,163,74,0.7)', borderRadius: 5 },
+              { label: 'Stock OUT', data: monthOut, backgroundColor: 'rgba(220,38,38,0.7)', borderRadius: 5 }
+            ]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { labels: { color: '#64748b', font: { size: 11 } } } },
+            scales: {
+              x: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { color: '#f1f5f9' } },
+              y: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { color: '#f1f5f9' } }
+            }
           }
-        }
-      });
-    };
+        });
 
-    window.loadDepartment = () => {
-      const depts = ['Injection','Painting','Packing','Sewing','Flocky','MWH'];
-      const tbody = document.getElementById('deptTable');
-      tbody.innerHTML = depts.map(d => {
-        const inV = Math.floor(Math.random()*500+100);
-        const outV = Math.floor(Math.random()*400+80);
-        const bal = inV - outV;
-        return `<tr>
-          <td><b>${d}</b></td>
-          <td>${inV.toLocaleString()}</td>
-          <td>${outV.toLocaleString()}</td>
-          <td>${bal.toLocaleString()}</td>
-          <td><span class="badge ${bal>0?'badge-success':'badge-error'}">${bal>0?'ປົກກະຕິ':'ຂາດ'}</span></td>
-        </tr>`;
-      }).join('');
-    };
+        // Dept chart
+        const deptIn = DEPTS.map(d => stocks.filter(s => s.type === 'in' && s.department === d).reduce((a, b) => a + (b.qty || 0), 0));
+        const deptOut = DEPTS.map(d => stocks.filter(s => s.type === 'out' && s.department === d).reduce((a, b) => a + (b.qty || 0), 0));
 
-    window.loadCompare = () => {
-      const curIn = 1200, prevIn = 1000;
-      const curOut = 980, prevOut = 1100;
-      const curBal = curIn - curOut, prevBal = prevIn - prevOut;
-
-      const pct = (cur, prev) => {
-        const d = ((cur-prev)/prev*100).toFixed(1);
-        return `<span style="color:${d>0?'var(--success)':'var(--error)'}">${d>0?'▲':'▼'} ${Math.abs(d)}%</span>`;
-      };
-
-      document.getElementById('c-in').textContent = curIn.toLocaleString();
-      document.getElementById('c-out').textContent = curOut.toLocaleString();
-      document.getElementById('c-bal').textContent = curBal.toLocaleString();
-      document.getElementById('c-in-chg').innerHTML = `vs ເດືອນກ່ອນ ${prevIn.toLocaleString()} ${pct(curIn,prevIn)}`;
-      document.getElementById('c-out-chg').innerHTML = `vs ເດືອນກ່ອນ ${prevOut.toLocaleString()} ${pct(curOut,prevOut)}`;
-      document.getElementById('c-bal-chg').innerHTML = `vs ເດືອນກ່ອນ ${prevBal.toLocaleString()} ${pct(curBal,prevBal)}`;
-
-      if (compareChartObj) compareChartObj.destroy();
-      compareChartObj = new Chart(document.getElementById('compareChart'), {
-        type: 'bar',
-        data: {
-          labels: ['Stock IN', 'Stock OUT', 'ຍອດເຫຼືອ'],
-          datasets: [
-            { label: 'ເດືອນນີ້', data: [curIn, curOut, curBal], backgroundColor: 'rgba(232,160,32,0.8)', borderRadius: 6 },
-            { label: 'ເດືອນກ່ອນ', data: [prevIn, prevOut, prevBal], backgroundColor: 'rgba(122,155,191,0.5)', borderRadius: 6 }
-          ]
-        },
-        options: {
-          responsive: true,
-          plugins: { legend: { labels: { color: '#e8f0f8' } } },
-          scales: {
-            x: { ticks: { color: '#7a9bbf' }, grid: { color: 'rgba(255,255,255,0.05)' } },
-            y: { ticks: { color: '#7a9bbf' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+        if (deptChart) deptChart.destroy();
+        deptChart = new Chart(document.getElementById('deptChart'), {
+          type: 'bar',
+          data: {
+            labels: DEPTS,
+            datasets: [
+              { label: 'IN', data: deptIn, backgroundColor: 'rgba(105,56,239,0.7)', borderRadius: 5 },
+              { label: 'OUT', data: deptOut, backgroundColor: 'rgba(139,92,246,0.4)', borderRadius: 5 }
+            ]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { labels: { color: '#64748b', font: { size: 11 } } } },
+            scales: {
+              x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: '#f1f5f9' } },
+              y: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { color: '#f1f5f9' } }
+            }
           }
-        }
-      });
+        });
+
+        // Overview table
+        const tbody = document.getElementById('overviewTable');
+        const deptNG = DEPTS.map(d => ngs.filter(n => n.department === d).reduce((a, b) => a + (b.qty || 0), 0));
+        tbody.innerHTML = DEPTS.map((d, i) => {
+          const bal = deptIn[i] - deptOut[i];
+          const ngRate = deptIn[i] > 0 ? ((deptNG[i] / deptIn[i]) * 100).toFixed(1) : '0.0';
+          return `<tr>
+            <td><b>${d}</b></td>
+            <td style="color:#16a34a"><b>${deptIn[i].toLocaleString()}</b></td>
+            <td style="color:#dc2626"><b>${deptOut[i].toLocaleString()}</b></td>
+            <td><b>${bal.toLocaleString()}</b></td>
+            <td style="color:#d97706">${deptNG[i].toLocaleString()}</td>
+            <td><span class="badge ${parseFloat(ngRate) < 2 ? 'badge-success' : parseFloat(ngRate) < 5 ? 'badge-warning' : 'badge-error'}">${ngRate}%</span></td>
+            <td><span class="badge ${bal >= 0 ? 'badge-success' : 'badge-error'}">${bal >= 0 ? 'ປົກກະຕິ' : 'ຂາດ'}</span></td>
+          </tr>`;
+        }).join('');
+
+        // Compare chart (mock prev month)
+        const curData = [totalIn, totalOut, totalIn - totalOut];
+        const prevData = [Math.floor(totalIn * 0.85), Math.floor(totalOut * 0.9), Math.floor((totalIn - totalOut) * 0.8)];
+
+        if (compareChart) compareChart.destroy();
+        compareChart = new Chart(document.getElementById('compareChart'), {
+          type: 'bar',
+          data: {
+            labels: ['Stock IN', 'Stock OUT', 'ຍອດເຫຼືອ'],
+            datasets: [
+              { label: 'ເດືອນນີ້', data: curData, backgroundColor: 'rgba(105,56,239,0.8)', borderRadius: 6 },
+              { label: 'ເດືອນກ່ອນ', data: prevData, backgroundColor: 'rgba(148,163,184,0.5)', borderRadius: 6 }
+            ]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { labels: { color: '#64748b' } } },
+            scales: {
+              x: { ticks: { color: '#94a3b8' }, grid: { color: '#f1f5f9' } },
+              y: { ticks: { color: '#94a3b8' }, grid: { color: '#f1f5f9' } }
+            }
+          }
+        });
+
+      } catch(e) {
+        console.error(e);
+      }
     };
 
-    // Init
-    loadYearly();
-    loadDepartment();
+    window.loadDept = async (dept, type) => {
+      document.getElementById('sec-overview').style.display = 'none';
+      document.getElementById('sec-dept').style.display = 'block';
+      document.getElementById('deptTitle').textContent = `🏭 ${dept}`;
+
+      const labels = { stock: 'Stock', ng: 'NG / Defect', plan: 'Production Plan' };
+      document.getElementById('deptSub').textContent = `${labels[type]} ຂອງພະແນກ ${dept}`;
+
+      const content = document.getElementById('deptContent');
+      content.innerHTML = '<div class="empty-state"><div class="empty-icon">⏳</div><div class="empty-text">ກຳລັງໂຫຼດ...</div></div>';
+
+      try {
+        if (type === 'stock') {
+          const snap = await getDocs(query(collection(db, 'stock'), where('department', '==', dept)));
+          const rows = [];
+          snap.forEach(d => rows.push({ id: d.id, ...d.data() }));
+          const inRows = rows.filter(r => r.type === 'in');
+          const outRows = rows.filter(r => r.type === 'out');
+          const totalIn = inRows.reduce((a, b) => a + (b.qty || 0), 0);
+          const totalOut = outRows.reduce((a, b) => a + (b.qty || 0), 0);
+
+          content.innerHTML = `
+            <div class="kpi-grid" style="margin-bottom:20px">
+              <div class="kpi-card"><div class="kpi-icon kpi-green">📥</div><div><div class="kpi-label">IN ທັງໝົດ</div><div class="kpi-value">${totalIn.toLocaleString()}</div></div></div>
+              <div class="kpi-card"><div class="kpi-icon kpi-red">📤</div><div><div class="kpi-label">OUT ທັງໝົດ</div><div class="kpi-value">${totalOut.toLocaleString()}</div></div></div>
+              <div class="kpi-card"><div class="kpi-icon kpi-blue">📦</div><div><div class="kpi-label">ຍອດເຫຼືອ</div><div class="kpi-value">${(totalIn - totalOut).toLocaleString()}</div></div></div>
+            </div>
+            <div class="table-card">
+              <div class="table-header"><div class="table-title">ລາຍການ Stock — ${dept}</div></div>
+              <table>
+                <thead><tr><th>#</th><th>ວັນທີ</th><th>ລະຫັດ</th><th>ຊື່ສິນຄ້າ</th><th>ປະເພດ</th><th>ຈຳນວນ</th><th>ໜ່ວຍ</th></tr></thead>
+                <tbody>
+                  ${rows.length === 0 ? '<tr><td colspan="7" style="text-align:center;padding:30px;color:#94a3b8">ບໍ່ມີຂໍ້ມູນ</td></tr>' :
+                    rows.map((r, i) => `<tr>
+                      <td>${i + 1}</td>
+                      <td>${r.date || '—'}</td>
+                      <td>${r.code || '—'}</td>
+                      <td>${r.name || '—'}</td>
+                      <td><span class="badge ${r.type === 'in' ? 'badge-success' : 'badge-error'}">${r.type === 'in' ? 'IN' : 'OUT'}</span></td>
+                      <td><b>${r.qty || 0}</b></td>
+                      <td>${r.unit || '—'}</td>
+                    </tr>`).join('')}
+                </tbody>
+              </table>
+            </div>`;
+        } else if (type === 'ng') {
+          const snap = await getDocs(query(collection(db, 'ng'), where('department', '==', dept)));
+          const rows = [];
+          snap.forEach(d => rows.push({ id: d.id, ...d.data() }));
+          const total = rows.reduce((a, b) => a + (b.qty || 0), 0);
+
+          content.innerHTML = `
+            <div class="kpi-grid" style="margin-bottom:20px">
+              <div class="kpi-card"><div class="kpi-icon kpi-red">❌</div><div><div class="kpi-label">NG ທັງໝົດ</div><div class="kpi-value">${total.toLocaleString()}</div></div></div>
+              <div class="kpi-card"><div class="kpi-icon kpi-orange">📋</div><div><div class="kpi-label">ຈຳນວນ Record</div><div class="kpi-value">${rows.length}</div></div></div>
+            </div>
+            <div class="table-card">
+              <div class="table-header"><div class="table-title">ລາຍການ NG — ${dept}</div></div>
+              <table>
+                <thead><tr><th>#</th><th>ວັນທີ</th><th>ລາຍການ</th><th>ປະເພດ Defect</th><th>ຈຳນວນ</th><th>ສາເຫດ</th></tr></thead>
+                <tbody>
+                  ${rows.length === 0 ? '<tr><td colspan="6" style="text-align:center;padding:30px;color:#94a3b8">ບໍ່ມີຂໍ້ມູນ</td></tr>' :
+                    rows.map((r, i) => `<tr>
+                      <td>${i + 1}</td>
+                      <td>${r.date || '—'}</td>
+                      <td>${r.item || '—'}</td>
+                      <td><span class="badge badge-warning">${r.defectType || '—'}</span></td>
+                      <td style="color:#dc2626"><b>${r.qty || 0}</b></td>
+                      <td>${r.cause || '—'}</td>
+                    </tr>`).join('')}
+                </tbody>
+              </table>
+            </div>`;
+        } else {
+          content.innerHTML = `<div class="empty-state"><div class="empty-icon">📅</div><div class="empty-text">Production Plan ສຳລັບ ${dept}</div></div>`;
+        }
+      } catch(e) {
+        content.innerHTML = '<div class="empty-state"><div class="empty-icon">❌</div><div class="empty-text">ເກີດຂໍ້ຜິດພາດ</div></div>';
+      }
+    };
+
+    loadOverview();
   </script>
 </body>
 </html>

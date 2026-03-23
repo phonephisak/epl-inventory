@@ -7,181 +7,85 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@300;400;600;700&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Noto Sans Lao', sans-serif; background: #f0f2f5; min-height: 100vh; display: flex; flex-direction: column; }
 
-    body {
-      font-family: 'Noto Sans Lao', sans-serif;
-      background: #f0f4f8;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    header {
-      background: #fff;
-      border-bottom: 1px solid #e2e8f0;
-      padding: 0 28px;
-      height: 56px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-    }
-
+    header { background: white; border-bottom: 1px solid #e2e8f0; padding: 0 24px; height: 54px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
     .header-left { display: flex; align-items: center; gap: 10px; }
+    .header-logo { width: 34px; height: 34px; background: linear-gradient(135deg, #875BF7, #6938EF); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+    .header-title { font-size: 15px; font-weight: 700; color: #1e293b; }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    .user-chip { display: flex; align-items: center; gap: 8px; padding: 5px 12px 5px 5px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 20px; }
+    .user-av { width: 26px; height: 26px; background: linear-gradient(135deg, #875BF7, #6938EF); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 11px; font-weight: 700; }
+    .user-nm { font-size: 12px; font-weight: 600; color: #1e293b; }
+    .user-rl { font-size: 10px; color: #6938EF; }
+    .btn-logout { padding: 7px 14px; background: white; border: 1px solid #e2e8f0; border-radius: 8px; color: #64748b; font-family: 'Noto Sans Lao', sans-serif; font-size: 12px; cursor: pointer; transition: all 0.15s; }
+    .btn-logout:hover { background: #fee2e2; border-color: #fca5a5; color: #dc2626; }
 
-    .header-logo {
-      width: 36px; height: 36px;
-      background: linear-gradient(135deg, #875BF7, #6938EF);
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px;
-      box-shadow: 0 2px 8px rgba(105,56,239,0.3);
-    }
+    main { flex: 1; padding: 40px 32px; max-width: 1200px; margin: 0 auto; width: 100%; }
 
-    .header-title { font-size: 17px; font-weight: 700; color: #1a1a2e; }
+    .welcome { margin-bottom: 36px; }
+    .welcome h1 { font-size: 24px; font-weight: 700; color: #1e293b; }
+    .welcome p { font-size: 13px; color: #64748b; margin-top: 4px; }
 
-    .header-right { display: flex; align-items: center; gap: 12px; }
-
-    .user-avatar {
-      width: 34px; height: 34px;
-      background: linear-gradient(135deg, #875BF7, #6938EF);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      color: white; font-size: 14px; font-weight: 700;
-    }
-
-    .user-info { text-align: right; }
-    .user-name { font-size: 13px; font-weight: 600; color: #1a1a2e; }
-    .user-role { font-size: 11px; color: #875BF7; }
-
-    .btn-logout {
-      padding: 7px 14px;
-      background: #fff;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      color: #64748b;
-      font-family: 'Noto Sans Lao', sans-serif;
-      font-size: 12px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .btn-logout:hover { background: #fee2e2; border-color: #fca5a5; color: #ef4444; }
-
-    main {
-      flex: 1;
-      padding: 48px 32px;
-      max-width: 1100px;
-      margin: 0 auto;
-      width: 100%;
-    }
-
-    .welcome {
-      text-align: center;
-      margin-bottom: 48px;
-      animation: fadeUp 0.4s ease both;
-    }
-
-    .welcome h1 { font-size: 26px; font-weight: 700; color: #1a1a2e; margin-bottom: 6px; }
-    .welcome p { font-size: 14px; color: #64748b; }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .modules-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
-    }
+    .modules-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
 
     .module-card {
-      background: #fff;
-      border-radius: 16px;
-      padding: 28px 20px 24px;
+      background: white;
+      border-radius: 14px;
+      padding: 24px 18px;
       cursor: pointer;
       text-decoration: none;
       transition: all 0.2s;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
       border: 1px solid #e2e8f0;
       text-align: center;
-      animation: fadeUp 0.4s ease both;
+      animation: fadeUp 0.3s ease both;
     }
 
-    .module-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 16px 40px rgba(0,0,0,0.1);
-      border-color: transparent;
-    }
+    .module-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.08); border-color: transparent; }
 
     .module-card:nth-child(1) { animation-delay: 0.05s; }
     .module-card:nth-child(2) { animation-delay: 0.1s; }
     .module-card:nth-child(3) { animation-delay: 0.15s; }
     .module-card:nth-child(4) { animation-delay: 0.2s; }
-    .module-card:nth-child(5) { animation-delay: 0.25s; grid-column: 2 / 4; }
+    .module-card:nth-child(5) { animation-delay: 0.25s; grid-column: 2/4; }
 
-    .module-icon-wrap {
-      width: 72px; height: 72px;
-      border-radius: 18px;
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 16px;
-      font-size: 36px;
-      transition: transform 0.2s;
-    }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 
-    .module-card:hover .module-icon-wrap { transform: scale(1.1); }
+    .mod-icon { width: 68px; height: 68px; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; font-size: 32px; transition: transform 0.2s; }
+    .module-card:hover .mod-icon { transform: scale(1.1); }
+    .ic-purple { background: linear-gradient(135deg, #f3f0ff, #ede9fe); }
+    .ic-blue   { background: linear-gradient(135deg, #eff6ff, #dbeafe); }
+    .ic-green  { background: linear-gradient(135deg, #f0fdf4, #dcfce7); }
+    .ic-red    { background: linear-gradient(135deg, #fff1f2, #ffe4e6); }
+    .ic-orange { background: linear-gradient(135deg, #fff7ed, #ffedd5); }
 
-    .icon-purple { background: linear-gradient(135deg, #f3f0ff, #ede9fe); }
-    .icon-blue   { background: linear-gradient(135deg, #eff6ff, #dbeafe); }
-    .icon-green  { background: linear-gradient(135deg, #f0fdf4, #dcfce7); }
-    .icon-red    { background: linear-gradient(135deg, #fff1f2, #ffe4e6); }
-    .icon-orange { background: linear-gradient(135deg, #fff7ed, #ffedd5); }
+    .mod-name { font-size: 14px; font-weight: 700; color: #1e293b; margin-bottom: 5px; }
+    .mod-desc { font-size: 11px; color: #94a3b8; line-height: 1.5; margin-bottom: 12px; }
+    .mod-tag { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+    .tg-purple { background: #f3f0ff; color: #7c3aed; }
+    .tg-blue   { background: #eff6ff; color: #2563eb; }
+    .tg-green  { background: #f0fdf4; color: #16a34a; }
+    .tg-red    { background: #fff1f2; color: #dc2626; }
+    .tg-orange { background: #fff7ed; color: #ea580c; }
 
-    .module-name { font-size: 15px; font-weight: 700; color: #1a1a2e; margin-bottom: 6px; }
-    .module-desc { font-size: 12px; color: #94a3b8; line-height: 1.5; margin-bottom: 14px; }
-
-    .module-tag {
-      display: inline-block;
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 600;
-    }
-
-    .tag-purple { background: #f3f0ff; color: #7c3aed; }
-    .tag-blue   { background: #eff6ff; color: #2563eb; }
-    .tag-green  { background: #f0fdf4; color: #16a34a; }
-    .tag-red    { background: #fff1f2; color: #dc2626; }
-    .tag-orange { background: #fff7ed; color: #ea580c; }
-
-    @media (max-width: 900px) {
-      .modules-grid { grid-template-columns: repeat(2, 1fr); }
-      .module-card:nth-child(5) { grid-column: auto; }
-    }
-
-    @media (max-width: 500px) {
-      .modules-grid { grid-template-columns: 1fr; }
-      main { padding: 24px 16px; }
-    }
+    @media (max-width: 900px) { .modules-grid { grid-template-columns: repeat(2,1fr); } .module-card:nth-child(5) { grid-column: auto; } }
+    @media (max-width: 500px) { .modules-grid { grid-template-columns: 1fr; } main { padding: 20px 16px; } }
   </style>
 </head>
 <body>
-
   <header>
     <div class="header-left">
       <div class="header-logo">🏭</div>
       <div class="header-title">EPL SYSTEM</div>
     </div>
     <div class="header-right">
-      <div class="user-info">
-        <div class="user-name" id="userName">—</div>
-        <div class="user-role" id="userRole">—</div>
+      <div class="user-chip">
+        <div class="user-av" id="userAv">A</div>
+        <div>
+          <div class="user-nm" id="userName">—</div>
+          <div class="user-rl" id="userRole">—</div>
+        </div>
       </div>
-      <div class="user-avatar" id="userAvatar">A</div>
       <button class="btn-logout" onclick="logout()">ອອກຈາກລະບົບ</button>
     </div>
   </header>
@@ -194,63 +98,52 @@
 
     <div class="modules-grid">
       <a class="module-card" href="dashboard.html">
-        <div class="module-icon-wrap icon-purple">📊</div>
-        <div class="module-name">Dashboard</div>
-        <div class="module-desc">ພາບລວມ, KPI ແລະ ການລາຍງານ</div>
-        <span class="module-tag tag-purple">ພາບລວມ</span>
+        <div class="mod-icon ic-purple">📊</div>
+        <div class="mod-name">Dashboard</div>
+        <div class="mod-desc">ພາບລວມ, KPI ແລະ ການລາຍງານ</div>
+        <span class="mod-tag tg-purple">ພາບລວມ</span>
       </a>
-
       <a class="module-card" href="planning.html">
-        <div class="module-icon-wrap icon-blue">📅</div>
-        <div class="module-name">Planning</div>
-        <div class="module-desc">ແຜນການຜະລິດ ແລະ Master Plan</div>
-        <span class="module-tag tag-blue">ວາງແຜນ</span>
+        <div class="mod-icon ic-blue">📅</div>
+        <div class="mod-name">Planning</div>
+        <div class="mod-desc">ແຜນການຜະລິດ ແລະ Master Plan</div>
+        <span class="mod-tag tg-blue">ວາງແຜນ</span>
       </a>
-
       <a class="module-card" href="stock.html">
-        <div class="module-icon-wrap icon-green">📦</div>
-        <div class="module-name">Stock</div>
-        <div class="module-desc">ສາງເຂົ້າ, ສາງອອກ ແລະ ຍອດເຫຼືອ</div>
-        <span class="module-tag tag-green">ສາງ</span>
+        <div class="mod-icon ic-green">📦</div>
+        <div class="mod-name">Stock</div>
+        <div class="mod-desc">ສາງເຂົ້າ, ສາງອອກ ແລະ ຍອດເຫຼືອ</div>
+        <span class="mod-tag tg-green">ສາງ</span>
       </a>
-
       <a class="module-card" href="ng.html">
-        <div class="module-icon-wrap icon-red">❌</div>
-        <div class="module-name">NG / Defect</div>
-        <div class="module-desc">ບັນທຶກ NG ແລະ ລາຍງານຄຸນນະພາບ</div>
-        <span class="module-tag tag-red">ຄຸນນະພາບ</span>
+        <div class="mod-icon ic-red">❌</div>
+        <div class="mod-name">NG / Defect</div>
+        <div class="mod-desc">ບັນທຶກ NG ແລະ ລາຍງານຄຸນນະພາບ</div>
+        <span class="mod-tag tg-red">ຄຸນນະພາບ</span>
       </a>
-
       <a class="module-card" href="settings.html" id="settingsCard">
-        <div class="module-icon-wrap icon-orange">⚙️</div>
-        <div class="module-name">Settings & Users</div>
-        <div class="module-desc">ຈັດການຜູ້ໃຊ້, Role ແລະ Permission</div>
-        <span class="module-tag tag-orange">ຕັ້ງຄ່າ</span>
+        <div class="mod-icon ic-orange">⚙️</div>
+        <div class="mod-name">Settings & Users</div>
+        <div class="mod-desc">ຈັດການຜູ້ໃຊ້, Role ແລະ Permission</div>
+        <span class="mod-tag tg-orange">ຕັ້ງຄ່າ</span>
       </a>
     </div>
   </main>
 
   <script>
     const session = sessionStorage.getItem('epl_user');
-    if (!session) {
-      window.location.href = 'index.html';
-    } else {
-      const user = JSON.parse(session);
-      const name = user.name || user.username || 'User';
+    if (!session) { window.location.href = 'index.html'; }
+    else {
+      const u = JSON.parse(session);
+      const name = u.name || u.username || 'User';
       document.getElementById('userName').textContent = name;
-      document.getElementById('userRole').textContent = user.role?.toUpperCase();
+      document.getElementById('userRole').textContent = u.role?.toUpperCase();
       document.getElementById('welcomeName').textContent = name;
-      document.getElementById('userAvatar').textContent = name.charAt(0).toUpperCase();
-      if (!['admin','manager'].includes(user.role)) {
-        document.getElementById('settingsCard').style.display = 'none';
-      }
+      document.getElementById('userAv').textContent = name.charAt(0).toUpperCase();
+      if (!['admin','manager'].includes(u.role)) document.getElementById('settingsCard').style.display = 'none';
     }
-
     function logout() {
-      if (confirm('ທ່ານຕ້ອງການອອກຈາກລະບົບບໍ?')) {
-        sessionStorage.removeItem('epl_user');
-        window.location.href = 'index.html';
-      }
+      if (confirm('ທ່ານຕ້ອງການອອກຈາກລະບົບບໍ?')) { sessionStorage.removeItem('epl_user'); window.location.href = 'index.html'; }
     }
   </script>
 </body>
