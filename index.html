@@ -1,310 +1,2096 @@
 <!DOCTYPE html>
 <html lang="lo">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EPL System — Login</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@300;400;600;700&display=swap" rel="stylesheet"/>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EPL System</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+/* === ROOT === */
+:root{
+  --primary:#059669;--primary-dark:#047857;--primary-light:#d1fae5;
+  --green:#059669;--green-light:#d1fae5;
+  --red:#e02424;--red-light:#fde8e8;
+  --yellow:#e3a008;--yellow-light:#fdf6b2;
+  --blue:#1a56db;--blue-light:#e1effe;
+  --dark:#111928;
+  --g900:#1f2937;--g700:#374151;--g500:#6b7280;
+  --g300:#d1d5db;--g100:#f3f4f6;--g50:#f9fafb;--white:#fff;
+  --sidebar-w:224px;--radius:10px;
+  --sh:0 1px 3px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.08);
+  --sh-md:0 4px 6px rgba(0,0,0,.1);--sh-lg:0 10px 15px rgba(0,0,0,.1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'IBM Plex Sans','Noto Sans Lao',sans-serif;background:var(--g100);color:var(--g900);font-size:14px;line-height:1.6}
 
-    body {
-      font-family: 'Noto Sans Lao', sans-serif;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, #1a7a4a 0%, #0d5c35 40%, #1a9a5a 100%);
-      padding: 20px;
-    }
+/* LOGIN */
+#loginPage{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#059669,#047857 40%,#064e3b)}
+.login-card{background:var(--white);border-radius:16px;padding:36px;width:100%;max-width:400px;box-shadow:var(--sh-lg)}
+.login-logo{text-align:center;margin-bottom:24px}
+.logo-icon{width:72px;height:72px;background:linear-gradient(135deg,#059669,#047857);border-radius:18px;display:inline-flex;align-items:center;justify-content:center;font-size:38px;margin-bottom:12px;box-shadow:0 6px 20px rgba(5,150,105,.45)}
+.lang-bar{display:flex;background:var(--g100);border-radius:8px;padding:3px;margin-bottom:20px;gap:3px}
+.lang-btn{flex:1;padding:7px;border:none;border-radius:6px;cursor:pointer;font-size:13px;font-weight:500;transition:all .2s;background:transparent;color:var(--g500);font-family:inherit}
+.lang-btn.active{background:var(--white);color:var(--primary);box-shadow:var(--sh)}
+.err-msg{background:var(--red-light);color:var(--red);border:1px solid #fca5a5;border-radius:8px;padding:9px 13px;font-size:13px;margin-bottom:14px;display:none}
 
-    .card {
-      background: white;
-      border-radius: 20px;
-      padding: 40px 36px;
-      width: 100%;
-      max-width: 420px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
-      animation: fadeUp 0.5s ease both;
-    }
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:9px 16px;border-radius:8px;border:none;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .2s}
+.btn-primary{background:var(--primary);color:var(--white)}.btn-primary:hover{background:var(--primary-dark)}
+.btn-success{background:var(--green);color:var(--white)}.btn-success:hover{background:#057a55}
+.btn-danger{background:var(--red);color:var(--white)}.btn-danger:hover{background:#c81e1e}
+.btn-outline{background:transparent;color:var(--primary);border:1.5px solid var(--primary)}.btn-outline:hover{background:var(--primary-light)}
+.btn-gray{background:var(--g100);color:var(--g700);border:1.5px solid var(--g300)}.btn-gray:hover{background:var(--g300)}
+.btn-yellow{background:var(--yellow);color:var(--white)}.btn-yellow:hover{background:#c27803}
+.btn-blue{background:var(--blue);color:var(--white)}.btn-blue:hover{background:#1e429f}
+.btn-sm{padding:5px 10px;font-size:12px;border-radius:6px}
+.btn-full{width:100%;padding:11px}
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+/* FORMS */
+.form-group{margin-bottom:14px}
+.form-label{display:block;font-size:12px;font-weight:600;color:var(--g700);margin-bottom:5px}
+.form-control{width:100%;padding:9px 13px;border:1.5px solid var(--g300);border-radius:8px;font-size:14px;font-family:inherit;transition:all .2s;background:var(--white);color:var(--g900)}
+.form-control:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(5,150,105,.18)}
+.form-control[readonly]{background:var(--g50);color:var(--g500)}
+select.form-control{cursor:pointer}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px}
+.req{color:var(--red);margin-left:2px}
 
-    .logo-wrap {
-      text-align: center;
-      margin-bottom: 20px;
-    }
+/* LAYOUT */
+#mainApp{display:none}
+.app-wrap{display:flex;min-height:100vh}
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.content{flex:1;padding:20px}
+.page{display:none}.page.active{display:block}
 
-    .logo-box {
-      width: 72px; height: 72px;
-      background: linear-gradient(135deg, #1a9a5a, #0d6e40);
-      border-radius: 18px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 14px;
-      box-shadow: 0 6px 20px rgba(13,110,64,0.3);
-    }
+/* TOPBAR */
+.topbar{height:56px;background:var(--white);border-bottom:1px solid var(--g300);display:flex;align-items:center;justify-content:space-between;padding:0 20px;position:sticky;top:0;z-index:50;box-shadow:var(--sh)}
+.page-title{font-size:15px;font-weight:700;color:var(--g900)}
+.lang-sw{display:flex;background:var(--g100);border-radius:6px;padding:2px;gap:2px}
+.lsw-btn{padding:4px 9px;border:none;border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;background:transparent;color:var(--g500);transition:all .2s;font-family:inherit}
+.lsw-btn.active{background:var(--white);color:var(--primary);box-shadow:var(--sh)}
 
-    .logo-text {
-      font-size: 18px;
-      font-weight: 800;
-      color: white;
-      letter-spacing: 1px;
-    }
+/* SIDEBAR */
+.sidebar{width:var(--sidebar-w);background:var(--dark);min-height:100vh;position:fixed;left:0;top:0;display:flex;flex-direction:column;z-index:100;overflow-y:auto}
+.sb-header{padding:16px 12px;border-bottom:1px solid rgba(255,255,255,.08)}
+.sb-brand{display:flex;align-items:center;gap:9px;color:var(--white)}
+.brand-icon{width:34px;height:34px;background:linear-gradient(135deg,var(--primary),#3f83f8);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.brand-text{font-size:13px;font-weight:700;line-height:1.3}
+.brand-sub{font-size:10px;color:rgba(255,255,255,.45);font-weight:400}
+.sb-nav{flex:1;padding:8px 6px}
+.nav-sec{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:rgba(255,255,255,.3);padding:10px 8px 4px;margin-top:4px}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:7px;color:rgba(255,255,255,.6);cursor:pointer;transition:all .2s;font-size:13px;margin-bottom:1px}
+.nav-item:hover{background:rgba(255,255,255,.07);color:var(--white)}
+.nav-item.active{background:var(--primary);color:var(--white)}
+.nav-icon{font-size:15px;width:18px;text-align:center;flex-shrink:0}
+.nav-dept-wrap{margin-bottom:2px}
+.nav-dept-hdr{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:7px;color:rgba(255,255,255,.65);cursor:pointer;transition:all .2s;font-size:13px;font-weight:600;user-select:none}
+.nav-dept-hdr:hover{background:rgba(255,255,255,.07);color:var(--white)}
+.nav-dept-hdr.open{color:var(--white)}
+.nav-dept-arrow{margin-left:auto;font-size:10px;transition:transform .2s;opacity:.5}
+.nav-dept-hdr.open .nav-dept-arrow{transform:rotate(90deg);opacity:1}
+.nav-dept-children{display:none;padding-left:14px;margin-top:1px}
+.nav-dept-children.open{display:block}
+.nav-sub{display:flex;align-items:center;gap:7px;padding:5px 10px 5px 12px;border-radius:6px;color:rgba(255,255,255,.45);cursor:pointer;transition:all .18s;font-size:12px;margin-bottom:1px;border-left:2px solid transparent}
+.nav-sub:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.85);border-left-color:rgba(255,255,255,.2)}
+.nav-sub.active{color:var(--white);border-left-color:var(--primary);background:rgba(5,150,105,.15)}
+.sb-footer{padding:10px 8px;border-top:1px solid rgba(255,255,255,.08)}
+.user-card{background:rgba(255,255,255,.07);border-radius:9px;padding:9px 11px;display:flex;align-items:center;gap:9px}
+.user-av{width:32px;height:32px;background:linear-gradient(135deg,var(--primary),#3f83f8);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--white);font-weight:700;font-size:12px;flex-shrink:0}
+.user-det{flex:1;min-width:0}
+.user-name{font-size:12px;font-weight:600;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user-role{font-size:10px;color:rgba(255,255,255,.45)}
+.logout-btn{background:none;border:none;color:rgba(255,255,255,.45);cursor:pointer;padding:4px;border-radius:4px;font-size:15px;transition:color .2s}
+.logout-btn:hover{color:var(--white)}
 
-    .app-name {
-      font-size: 24px;
-      font-weight: 700;
-      color: #1a1a1a;
-      margin-bottom: 4px;
-    }
+/* CARDS */
+.card{background:var(--white);border-radius:var(--radius);box-shadow:var(--sh);overflow:hidden;margin-bottom:16px}
+.card-head{padding:14px 18px;border-bottom:1px solid var(--g100);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.card-title{font-size:14px;font-weight:700;color:var(--g900);display:flex;align-items:center;gap:7px}
+.card-body{padding:18px}
 
-    .app-sub {
-      font-size: 13px;
-      color: #1a9a5a;
-      font-weight: 500;
-    }
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:18px}
+.stat-card{background:var(--white);border-radius:var(--radius);padding:18px;box-shadow:var(--sh);display:flex;align-items:center;gap:14px;transition:transform .2s,box-shadow .2s}
+.stat-card:hover{transform:translateY(-2px);box-shadow:var(--sh-md)}
+.stat-icon{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.si-green{background:var(--green-light)}.si-red{background:var(--red-light)}.si-blue{background:var(--blue-light)}.si-yellow{background:var(--yellow-light)}.si-gray{background:var(--g100)}
+.stat-val{font-size:20px;font-weight:700;color:var(--g900)}
+.stat-lbl{font-size:11px;color:var(--g500);margin-top:1px}
+.stat-chg{font-size:11px;margin-top:3px}
+.chg-up{color:var(--green)}.chg-down{color:var(--red)}
 
-    /* LANG TOGGLE */
-    .lang-toggle {
-      display: flex;
-      background: #f1f5f9;
-      border-radius: 10px;
-      padding: 4px;
-      margin: 20px 0 24px;
-    }
+/* TABLES */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:var(--g50);padding:9px 13px;text-align:left;font-weight:600;color:var(--g700);font-size:11px;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap;border-bottom:2px solid var(--g300)}
+tbody tr{border-bottom:1px solid var(--g100);transition:background .15s}
+tbody tr:hover{background:var(--g50)}
+tbody td{padding:9px 13px;color:var(--g700);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tbl-actions{display:flex;gap:4px}
 
-    .lang-btn {
-      flex: 1;
-      padding: 9px;
-      border: none;
-      border-radius: 8px;
-      font-family: 'Noto Sans Lao', sans-serif;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      background: transparent;
-      color: #64748b;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-    }
+/* BADGE */
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+.b-green{background:var(--green-light);color:#065f46}
+.b-red{background:var(--red-light);color:#9b1c1c}
+.b-yellow{background:var(--yellow-light);color:#723b13}
+.b-blue{background:var(--blue-light);color:#1e429f}
+.b-gray{background:var(--g100);color:var(--g700)}
+.b-admin{background:#fde8e8;color:#9b1c1c}
+.b-manager{background:#fdf6b2;color:#723b13}
+.b-leader{background:#def7ec;color:#03543f}
+.b-user{background:var(--g100);color:var(--g700)}
 
-    .lang-btn.active {
-      background: white;
-      color: #1a9a5a;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-    }
+/* MODALS */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(3px);padding:16px}
+.modal-bg.open{display:flex}
+.modal{background:var(--white);border-radius:14px;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;box-shadow:var(--sh-lg);animation:mIn .2s ease}
+@keyframes mIn{from{transform:translateY(-16px) scale(.97);opacity:0}to{transform:none;opacity:1}}
+.modal-head{padding:16px 18px;border-bottom:1px solid var(--g100);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-size:15px;font-weight:700}
+.modal-close{background:var(--g100);border:none;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:var(--g500)}
+.modal-close:hover{background:var(--g300)}
+.modal-body{padding:18px}
+.modal-foot{padding:12px 18px;border-top:1px solid var(--g100);display:flex;gap:7px;justify-content:flex-end}
 
-    /* FORM */
-    .form-group { margin-bottom: 16px; }
+/* ALERTS */
+.alert{padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:12px}
+.alert-ok{background:var(--green-light);color:#03543f;border:1px solid #84e1bc}
+.alert-err{background:var(--red-light);color:#9b1c1c;border:1px solid #fca5a5}
+.alert-warn{background:var(--yellow-light);color:#723b13;border:1px solid #fcd34d}
 
-    .form-label {
-      display: block;
-      font-size: 12px;
-      font-weight: 600;
-      color: #475569;
-      margin-bottom: 7px;
-    }
+/* IMPORT */
+.import-zone{border:2px dashed var(--g300);border-radius:10px;padding:28px;text-align:center;cursor:pointer;transition:all .2s;background:var(--g50)}
+.import-zone:hover,.import-zone.drag{border-color:var(--primary);background:var(--primary-light)}
 
-    .form-input {
-      width: 100%;
-      padding: 12px 14px;
-      border: 1.5px solid #e2e8f0;
-      border-radius: 10px;
-      font-family: 'Noto Sans Lao', sans-serif;
-      font-size: 14px;
-      color: #1e293b;
-      outline: none;
-      transition: all 0.15s;
-      background: #f8fafc;
-    }
+/* MODULE CARDS */
+.module-home{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:16px;padding:4px}
+.module-card{background:var(--white);border-radius:14px;padding:24px 16px;text-align:center;cursor:pointer;box-shadow:var(--sh);transition:all .25s;border:2px solid transparent}
+.module-card:hover{transform:translateY(-4px);box-shadow:var(--sh-lg);border-color:var(--primary)}
+.module-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 12px;box-shadow:0 4px 10px rgba(0,0,0,.15)}
+.module-name{font-size:13px;font-weight:700;color:var(--g900);margin-bottom:4px}
+.module-desc{font-size:11px;color:var(--g500);line-height:1.4}
 
-    .form-input:focus {
-      border-color: #1a9a5a;
-      background: white;
-      box-shadow: 0 0 0 3px rgba(26,154,90,0.1);
-    }
+/* DEPT HEADER */
+.dept-header{display:flex;align-items:center;gap:12px;padding:16px 20px;border-radius:12px;margin-bottom:0;color:#fff}
+.dept-header-icon{width:44px;height:44px;background:rgba(255,255,255,.2);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.dept-header-name{font-size:18px;font-weight:800;letter-spacing:.5px}
+.dept-header-sub{font-size:11px;opacity:.8;margin-top:2px}
 
-    .form-input::placeholder { color: #94a3b8; }
+/* TABS */
+.tab-bar{display:flex;border-bottom:2px solid var(--g100);margin-bottom:0;overflow-x:auto}
+.tab-item{padding:10px 20px;cursor:pointer;font-size:13px;font-weight:600;color:var(--g500);border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s;white-space:nowrap}
+.tab-item.active{color:var(--primary);border-bottom-color:var(--primary)}
+.tab-item:hover{color:var(--g700);background:var(--g50)}
 
-    .alert {
-      padding: 11px 14px;
-      border-radius: 9px;
-      font-size: 13px;
-      margin-bottom: 14px;
-      display: none;
-    }
+/* CHARTS */
+.chart-box{position:relative;width:100%;height:260px}
+.chart-box-sm{position:relative;width:100%;height:200px}
 
-    .alert.error { background: #fee2e2; border: 1px solid #fca5a5; color: #dc2626; display: block; }
-    .alert.success { background: #dcfce7; border: 1px solid #86efac; color: #16a34a; display: block; }
+/* PAGINATION */
+.pag-bar{display:flex;align-items:center;gap:6px;padding:10px 16px;flex-wrap:wrap;border-top:1px solid var(--g100)}
+.pag-btn{padding:4px 10px;border:1.5px solid var(--g300);border-radius:6px;background:var(--white);color:var(--g700);cursor:pointer;font-size:12px;font-family:inherit;transition:all .2s}
+.pag-btn:hover{background:var(--g100)}.pag-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.pag-info{font-size:12px;color:var(--g500);margin-left:4px}
 
-    .btn-login {
-      width: 100%;
-      padding: 13px;
-      background: linear-gradient(135deg, #1a9a5a, #0d6e40);
-      border: none;
-      border-radius: 10px;
-      color: white;
-      font-family: 'Noto Sans Lao', sans-serif;
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s;
-      box-shadow: 0 4px 14px rgba(13,110,64,0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      margin-top: 4px;
-    }
+/* PERMISSION GRID */
+.perm-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:6px}
+.perm-chk{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--g700)}
+.perm-chk input{accent-color:var(--primary);width:14px;height:14px}
 
-    .btn-login:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(13,110,64,0.4); }
-    .btn-login:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-
-    .loading {
-      width: 14px; height: 14px;
-      border: 2px solid rgba(255,255,255,0.4);
-      border-top-color: white;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .footer { text-align: center; font-size: 11px; color: #94a3b8; margin-top: 20px; }
-  </style>
+/* UTILS */
+#toast{position:fixed;bottom:20px;right:20px;background:var(--g900);color:var(--white);padding:11px 16px;border-radius:9px;font-size:13px;box-shadow:var(--sh-lg);z-index:9999;display:none;max-width:280px}
+.loading-ov{position:fixed;inset:0;background:rgba(255,255,255,.85);z-index:9998;display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px}
+.loading-ov.show{display:flex}
+.spinner{width:36px;height:36px;border:3px solid var(--g300);border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty-row td{text-align:center;padding:32px;color:var(--g500);font-size:13px}
+.top-rank{font-size:14px;font-weight:800;color:var(--primary)}
+.trend-up{color:var(--green);font-size:11px}
+.trend-down{color:var(--red);font-size:11px}
+@media(max-width:768px){.sidebar{transform:translateX(-100%)}.main{margin-left:0}.form-row,.form-row-3{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
 
-  <div class="card">
-    <div class="logo-wrap">
-      <div class="logo-box">
-        <div class="logo-text">EPL</div>
-      </div>
-      <div class="app-name">EPL System</div>
-      <div class="app-sub" id="appSub">ລະບົບຈັດການໂຮງງານ / Factory Management</div>
+<!-- LOADING -->
+<div class="loading-ov" id="loadOv"><div class="spinner"></div><div id="loadTxt" style="font-size:13px;color:var(--g500)">Loading...</div></div>
+<div id="toast"></div>
+
+<!-- LOGIN -->
+<div id="loginPage">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="logo-icon">🏭</div>
+      <h1 style="font-size:22px;font-weight:800;color:#064e3b;letter-spacing:.5px">EPL System</h1>
+      <p style="color:#059669;font-weight:500" id="appSubTitle">ລະບົບຈັດການໂຮງງານ / Factory Management</p>
     </div>
-
-    <!-- LANG -->
-    <div class="lang-toggle">
-      <button class="lang-btn active" id="btnLao" onclick="setLang('lo')">🇱🇦 ລາວ</button>
-      <button class="lang-btn" id="btnEng" onclick="setLang('en')">🇬🇧 English</button>
+    <div class="lang-bar">
+      <button class="lang-btn active" onclick="setLang('lo')">🇱🇦 ລາວ</button>
+      <button class="lang-btn" onclick="setLang('en')">🇬🇧 English</button>
     </div>
-
-    <div id="alert" class="alert"></div>
-
+    <div class="err-msg" id="loginErr"></div>
     <div class="form-group">
-      <label class="form-label" id="lblUser">ຊື່ຜູ້ໃຊ້ / Username</label>
-      <input type="text" class="form-input" id="username" placeholder="Username" autocomplete="off"/>
+      <label class="form-label" id="lbUser">ຊື່ຜູ້ໃຊ້ / Username</label>
+      <input type="text" class="form-control" id="fUser" placeholder="Username" autocomplete="off">
     </div>
-
     <div class="form-group">
-      <label class="form-label" id="lblPass">ລະຫັດຜ່ານ / Password</label>
-      <input type="password" class="form-input" id="password" placeholder="Password"/>
+      <label class="form-label" id="lbPass">ລະຫັດຜ່ານ / Password</label>
+      <input type="password" class="form-control" id="fPass" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()">
     </div>
-
-    <button class="btn-login" id="loginBtn" onclick="handleLogin()">
-      <span>🔐</span>
-      <span id="btnText">ເຂົ້າສູ່ລະບົບ / Login</span>
-    </button>
-
-    <div class="footer">EPL System v1.0 © 2025 — Epoch Factory</div>
+    <button class="btn btn-primary btn-full" onclick="doLogin()">🔐 <span id="lbLoginBtn">ເຂົ້າສູ່ລະບົບ / Login</span></button>
   </div>
+</div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+<!-- MAIN APP -->
+<div id="mainApp">
+  <div class="app-wrap">
+    <nav class="sidebar">
+      <div class="sb-header">
+        <div class="sb-brand">
+          <div class="brand-icon">🏭</div>
+          <div><div class="brand-text">EPL System</div><div class="brand-sub">Factory Management</div></div>
+        </div>
+      </div>
+      <div class="sb-nav">
+        <div class="nav-sec">MAIN</div>
+        <div class="nav-item active" id="ni_home" onclick="showPage('home')"><span class="nav-icon">🏠</span><span>Home</span></div>
+        <div class="nav-item" id="ni_dash" onclick="showPage('dashboard')"><span class="nav-icon">📊</span><span>Dashboard</span></div>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBq3ty0rw70wGE_QxwOe3SczEfXViWxx98",
-      authDomain: "epl-inventory.firebaseapp.com",
-      projectId: "epl-inventory",
-      storageBucket: "epl-inventory.firebasestorage.app",
-      messagingSenderId: "345481661658",
-      appId: "1:345481661658:web:60bef5a2eafdf3060829"
+        <div class="nav-sec">ພະແນກ / DEPT</div>
+        <div id="deptNavList"></div>
+
+        <div class="nav-sec">ຂໍ້ມູນ / DATA</div>
+        <div class="nav-item" id="ni_stock" onclick="showPage('stock')"><span class="nav-icon">📦</span><span>Stock</span></div>
+        <div class="nav-item" id="ni_master" onclick="showPage('master')"><span class="nav-icon">🗄️</span><span>Master Data</span></div>
+
+        <div id="adminMenuWrap" style="display:none">
+          <div class="nav-sec">ADMIN</div>
+          <div class="nav-item" id="ni_users" onclick="showPage('users')"><span class="nav-icon">👥</span><span>ຈັດການ User</span></div>
+        </div>
+      </div>
+      <div class="sb-footer">
+        <div class="user-card">
+          <div class="user-av" id="sbAv">U</div>
+          <div class="user-det">
+            <div class="user-name" id="sbName">User</div>
+            <div class="user-role" id="sbRole">Role</div>
+          </div>
+          <button class="logout-btn" onclick="doLogout()" title="Logout">⏏</button>
+        </div>
+      </div>
+    </nav>
+
+    <div class="main">
+      <div class="topbar">
+        <div class="page-title" id="topTitle">🏠 Home</div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-size:12px;color:var(--g500)" id="topDate"></span>
+          <div class="lang-sw">
+            <button class="lsw-btn active" onclick="setLang('lo')">🇱🇦 ລາວ</button>
+            <button class="lsw-btn" onclick="setLang('en')">🇬🇧 EN</button>
+          </div>
+        </div>
+      </div>
+      <div class="content">
+
+        <!-- HOME PAGE -->
+        <div class="page active" id="pageHome">
+          <div style="margin-bottom:20px">
+            <div style="font-size:20px;font-weight:800;color:var(--g900);margin-bottom:4px">👋 <span id="homeWelcome">ສະບາຍດີ,</span> <span id="homeUserName">User</span>!</div>
+            <div style="font-size:13px;color:var(--g500)" id="homeSubText">ເລືອກໂມດູນທີ່ຕ້ອງການ</div>
+          </div>
+          <div class="module-home" id="moduleGrid"></div>
+        </div>
+
+        <!-- DASHBOARD PAGE -->
+        <div class="page" id="pageDashboard">
+          <!-- Filter -->
+          <div class="card" style="margin-bottom:14px">
+            <div class="card-body" style="padding:12px 16px">
+              <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+                <span style="font-size:12px;font-weight:700;color:var(--g500)">🔍 FILTER:</span>
+                <select class="form-control" id="fYear" style="width:110px" onchange="loadDashboard()">
+                  <option value="ALL">All Years</option>
+                  <option value="2025">2025</option>
+                  <option value="2024">2024</option>
+                </select>
+                <select class="form-control" id="fMonth" style="width:130px" onchange="loadDashboard()">
+                  <option value="ALL">All Months</option>
+                  <option value="01">ມັງກອນ</option><option value="02">ກຸມພາ</option>
+                  <option value="03">ມີນາ</option><option value="04">ເມສາ</option>
+                  <option value="05">ພຶດສະພາ</option><option value="06">ມິຖຸນາ</option>
+                  <option value="07">ກໍລະກົດ</option><option value="08">ສິງຫາ</option>
+                  <option value="09">ກັນຍາ</option><option value="10">ຕຸລາ</option>
+                  <option value="11">ພະຈິກ</option><option value="12">ທັນວາ</option>
+                </select>
+                <select class="form-control" id="fDept" style="width:150px" onchange="loadDashboard()">
+                  <option value="ALL">All Departments</option>
+                </select>
+                <button class="btn btn-outline btn-sm" onclick="resetDashFilter()">↺ Reset</button>
+                <button class="btn btn-outline btn-sm" onclick="loadDashboard()">🔄 Refresh</button>
+                <button class="btn btn-gray btn-sm" onclick="exportDashExcel()">⬇ Excel</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- KPI Stock -->
+          <div style="font-size:12px;font-weight:700;color:var(--g500);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">📦 Stock Overview</div>
+          <div class="stats-grid" id="stockKPI">
+            <div class="stat-card"><div class="stat-icon si-green">📥</div><div><div class="stat-val" id="kpi_in">—</div><div class="stat-lbl">Stock IN ທັງໝົດ</div></div></div>
+            <div class="stat-card"><div class="stat-icon si-red">📤</div><div><div class="stat-val" id="kpi_out">—</div><div class="stat-lbl">Stock OUT ທັງໝົດ</div></div></div>
+            <div class="stat-card"><div class="stat-icon si-blue">📦</div><div><div class="stat-val" id="kpi_bal">—</div><div class="stat-lbl">ຍອດເຫຼືອ</div></div></div>
+            <div class="stat-card"><div class="stat-icon si-yellow">💰</div><div><div class="stat-val" id="kpi_cost">—</div><div class="stat-lbl">ມູນຄ່າ (ກີບ)</div></div></div>
+          </div>
+
+          <!-- KPI NG -->
+          <div style="font-size:12px;font-weight:700;color:var(--g500);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">❌ NG Overview</div>
+          <div class="stats-grid" id="ngKPI">
+            <div class="stat-card"><div class="stat-icon si-red">❌</div><div><div class="stat-val" id="kpi_ng_total">—</div><div class="stat-lbl">NG ທັງໝົດ</div></div></div>
+            <div class="stat-card"><div class="stat-icon si-yellow">📈</div><div><div class="stat-val" id="kpi_ng_rate">—</div><div class="stat-lbl">% NG Rate</div></div></div>
+            <div class="stat-card"><div class="stat-icon si-gray">🏭</div><div><div class="stat-val" id="kpi_ng_dept">—</div><div class="stat-lbl">ພະແນກ NG ຫຼາຍສຸດ</div></div></div>
+            <div class="stat-card"><div class="stat-icon si-blue">📋</div><div><div class="stat-val" id="kpi_plan_rate">—</div><div class="stat-lbl">Plan Achieve %</div></div></div>
+          </div>
+
+          <!-- Charts Row 1 -->
+          <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px">
+            <div class="card">
+              <div class="card-head"><div class="card-title">📈 Stock IN vs OUT ລາຍເດືອນ</div></div>
+              <div class="card-body" style="padding:10px"><div class="chart-box"><canvas id="chartStockBar"></canvas></div></div>
+            </div>
+            <div class="card">
+              <div class="card-head"><div class="card-title">🥧 Stock ຕາມພະແນກ</div></div>
+              <div class="card-body" style="padding:10px"><div class="chart-box"><canvas id="chartDeptPie"></canvas></div></div>
+            </div>
+          </div>
+
+          <!-- Charts Row 2 -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+            <div class="card">
+              <div class="card-head"><div class="card-title">📊 NG ຕາມພະແນກ</div></div>
+              <div class="card-body" style="padding:10px"><div class="chart-box-sm"><canvas id="chartNGBar"></canvas></div></div>
+            </div>
+            <div class="card">
+              <div class="card-head"><div class="card-title">📈 Plan vs Actual</div></div>
+              <div class="card-body" style="padding:10px"><div class="chart-box-sm"><canvas id="chartPlanBar"></canvas></div></div>
+            </div>
+          </div>
+
+          <!-- Dept Summary Table -->
+          <div class="card" style="margin-bottom:14px">
+            <div class="card-head">
+              <div class="card-title">🏢 ສະຫຼຸບທຸກພະແນກ</div>
+            </div>
+            <div class="card-body" style="padding:0 0 8px">
+              <div class="tbl-wrap">
+                <table><thead><tr>
+                  <th>ພະແນກ</th><th>Stock IN</th><th>Stock OUT</th><th>ຍອດເຫຼືອ</th><th>NG</th><th>% NG</th><th>Plan</th><th>Actual</th><th>% Achieve</th><th>ສະຖານະ</th>
+                </tr></thead><tbody id="deptSummaryTbody"></tbody></table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Top Items -->
+          <div class="card" style="margin-bottom:14px">
+            <div class="card-head">
+              <div class="card-title">🏆 Top Items</div>
+              <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                <select class="form-control" id="topN" style="width:90px" onchange="renderTopItems()">
+                  <option value="5">Top 5</option>
+                  <option value="10" selected>Top 10</option>
+                  <option value="20">Top 20</option>
+                  <option value="30">Top 30</option>
+                  <option value="50">Top 50</option>
+                  <option value="100">Top 100</option>
+                </select>
+                <select class="form-control" id="topCriteria" style="width:150px" onchange="renderTopItems()">
+                  <option value="ng_qty">NG ຫຼາຍສຸດ</option>
+                  <option value="stock_in">Stock IN ຫຼາຍສຸດ</option>
+                  <option value="stock_out">Stock OUT ຫຼາຍສຸດ</option>
+                  <option value="balance_high">ຍອດເຫຼືອຫຼາຍສຸດ</option>
+                  <option value="balance_low">ຍອດເຫຼືອໜ້ອຍສຸດ</option>
+                </select>
+                <select class="form-control" id="topDept" style="width:140px" onchange="renderTopItems()">
+                  <option value="ALL">ທຸກພະແນກ</option>
+                </select>
+              </div>
+            </div>
+            <div class="card-body" style="padding:0 0 8px">
+              <div class="tbl-wrap">
+                <table><thead><tr>
+                  <th>#</th><th>Semi Code</th><th>ຊື່ສິນຄ້າ</th><th>ພະແນກ</th><th>Stock IN</th><th>Stock OUT</th><th>ຍອດເຫຼືອ</th><th>NG Qty</th><th>% NG</th>
+                </tr></thead><tbody id="topItemsTbody"></tbody></table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Month Compare -->
+          <div class="card">
+            <div class="card-head"><div class="card-title">📅 ສົມທຽບເດືອນຕໍ່ເດືອນ</div></div>
+            <div class="card-body" style="padding:10px"><div class="chart-box"><canvas id="chartMonthCompare"></canvas></div></div>
+          </div>
+        </div>
+
+        <!-- DEPT PAGE (NG) -->
+        <div class="page" id="pageDept">
+          <div class="card">
+            <div class="dept-header" id="deptHeaderBg" style="background:linear-gradient(135deg,#e02424,#c81e1e)">
+              <div class="dept-header-icon" id="deptHeaderIcon">❌</div>
+              <div style="flex:1">
+                <div class="dept-header-name" id="deptPageTitle">Department — NG</div>
+                <div class="dept-header-sub" id="deptHeaderSub">NG / Defect Tracking</div>
+              </div>
+            </div>
+            <div class="card-head">
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                <div class="card-title" id="deptRecordCount">📋 ລາຍການ</div>
+                <input type="date" class="form-control" id="deptDateFrom" style="width:140px" onchange="filterDeptTable()">
+                <span style="font-size:12px;color:var(--g500)">ຫາ</span>
+                <input type="date" class="form-control" id="deptDateTo" style="width:140px" onchange="filterDeptTable()">
+              </div>
+              <div style="display:flex;gap:7px;flex-wrap:wrap;align-items:center">
+                <input type="text" class="form-control" style="width:180px" id="deptSearch" placeholder="🔍 ຄົ້ນຫາ..." oninput="filterDeptTable()">
+                <button class="btn btn-success btn-sm" onclick="openDeptAddModal()">➕ ເພີ່ມ</button>
+                <button class="btn btn-yellow btn-sm" onclick="openDeptImportModal()">📥 Import</button>
+                <button class="btn btn-outline btn-sm" onclick="exportDeptCSV()">⬇ CSV</button>
+                <button class="btn btn-blue btn-sm" onclick="exportDeptExcel()">⬇ Excel</button>
+                <button class="btn btn-gray btn-sm" onclick="printDeptTable()">🖨️ ພິມ</button>
+              </div>
+            </div>
+            <div class="card-body" style="padding:0 0 8px">
+              <div class="tbl-wrap">
+                <table id="deptTable"><thead id="deptThead"></thead><tbody id="deptTbody"></tbody></table>
+              </div>
+              <div class="pag-bar" id="deptPagBar"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STOCK PAGE -->
+        <div class="page" id="pageStock">
+          <div class="card">
+            <div class="card-head" style="padding-bottom:0;border-bottom:none">
+              <div class="card-title" id="stockTitle">📦 Stock</div>
+            </div>
+            <div class="tab-bar" style="padding:0 18px">
+              <div class="tab-item active" id="stab_in" onclick="switchStockTab('IN')">📥 Stock IN</div>
+              <div class="tab-item" id="stab_out" onclick="switchStockTab('OUT')">📤 Stock OUT</div>
+              <div class="tab-item" id="stab_bal" onclick="switchStockTab('BAL')">📊 Balance</div>
+            </div>
+            <div class="card-head" style="border-top:1px solid var(--g100)">
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                <div class="card-title" id="stockRecordCount">📋 ລາຍການ</div>
+                <select class="form-control" id="stockDeptFilter" style="width:140px" onchange="loadStockPage()">
+                  <option value="ALL">ທຸກພະແນກ</option>
+                </select>
+                <input type="date" class="form-control" id="stockDateFrom" style="width:140px" onchange="filterStockTable()">
+                <span style="font-size:12px;color:var(--g500)">ຫາ</span>
+                <input type="date" class="form-control" id="stockDateTo" style="width:140px" onchange="filterStockTable()">
+              </div>
+              <div style="display:flex;gap:7px;flex-wrap:wrap">
+                <input type="text" class="form-control" style="width:180px" id="stockSearch" placeholder="🔍 ຄົ້ນຫາ..." oninput="filterStockTable()">
+                <button class="btn btn-success btn-sm" id="btnStockAdd" onclick="openStockAddModal()">➕ ເພີ່ມ</button>
+                <button class="btn btn-yellow btn-sm" onclick="openStockImportModal()">📥 Import</button>
+                <button class="btn btn-outline btn-sm" onclick="exportStockCSV()">⬇ CSV</button>
+                <button class="btn btn-blue btn-sm" onclick="exportStockExcel()">⬇ Excel</button>
+                <button class="btn btn-gray btn-sm" onclick="printStockTable()">🖨️ ພິມ</button>
+              </div>
+            </div>
+            <div class="card-body" style="padding:0 0 8px">
+              <div class="tbl-wrap">
+                <table id="stockTable"><thead id="stockThead"></thead><tbody id="stockTbody"></tbody></table>
+              </div>
+              <div class="pag-bar" id="stockPagBar"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MASTER DATA PAGE -->
+        <div class="page" id="pageMaster">
+          <div class="card">
+            <div class="dept-header" style="background:linear-gradient(135deg,#0694a2,#047481);border-radius:10px 10px 0 0">
+              <div class="dept-header-icon">🗄️</div>
+              <div style="flex:1">
+                <div class="dept-header-name">MASTER DATA</div>
+                <div class="dept-header-sub" id="masterModeSub">Semi Code / Master Plan</div>
+              </div>
+              <div style="display:flex;gap:8px">
+                <button class="btn btn-sm" id="btnMasterSemi" style="background:rgba(255,255,255,.25);color:#fff;border:2px solid rgba(255,255,255,.6)" onclick="switchMasterTab('semi')">🏷️ Semi Code</button>
+                <button class="btn btn-sm" id="btnMasterPlan" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);border:2px solid rgba(255,255,255,.3)" onclick="switchMasterTab('plan')">📋 Master Plan</button>
+              </div>
+            </div>
+            <div class="card-head" style="border-top:none">
+              <div class="card-title" id="masterRecordCount">📊 ລາຍການ</div>
+              <div style="display:flex;gap:7px;flex-wrap:wrap">
+                <input type="text" class="form-control" style="width:200px" id="masterSearch" placeholder="🔍 ຄົ້ນຫາ..." oninput="filterMasterTable()">
+                <button class="btn btn-success btn-sm" id="btnMasterAdd" onclick="openMasterAddModal()">➕ ເພີ່ມ</button>
+                <button class="btn btn-yellow btn-sm" onclick="openMasterImportModal()">📥 Import</button>
+                <button class="btn btn-outline btn-sm" onclick="exportMasterCSV()">⬇ CSV</button>
+                <button class="btn btn-blue btn-sm" onclick="exportMasterExcel()">⬇ Excel</button>
+              </div>
+            </div>
+            <div class="card-body" style="padding:0 0 8px">
+              <div class="tbl-wrap">
+                <table id="masterTable"><thead id="masterThead"></thead><tbody id="masterTbody"></tbody></table>
+              </div>
+              <div class="pag-bar" id="masterPagBar"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- USERS PAGE -->
+        <div class="page" id="pageUsers">
+          <div class="card">
+            <div class="card-head">
+              <div class="card-title">👥 ຈັດການ User</div>
+              <button class="btn btn-success btn-sm" onclick="openUserModal(null)">➕ ເພີ່ມ User</button>
+            </div>
+            <div class="card-body" style="padding:0 0 8px">
+              <div class="tbl-wrap">
+                <table><thead><tr>
+                  <th>#</th><th>Username</th><th>ຊື່ເຕັມ</th><th>Email</th><th>Role</th><th>ພະແນກ</th><th>ສິດທິ Module</th><th>Action</th>
+                </tr></thead><tbody id="usersTbody"></tbody></table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODALS ============ -->
+
+<!-- Add/Edit Dept Row -->
+<div class="modal-bg" id="deptRowModal">
+  <div class="modal">
+    <div class="modal-head"><div class="modal-title" id="deptRowModalTitle">ເພີ່ມ NG</div><button class="modal-close" onclick="closeModal('deptRowModal')">×</button></div>
+    <div class="modal-body"><div id="deptRowMsg"></div><div id="deptRowFields"></div></div>
+    <div class="modal-foot">
+      <button class="btn btn-gray" onclick="closeModal('deptRowModal')">ຍົກເລີກ</button>
+      <button class="btn btn-primary" onclick="saveDeptRow()">💾 ບັນທຶກ</button>
+    </div>
+  </div>
+</div>
+
+<!-- Import Dept -->
+<div class="modal-bg" id="deptImportModal">
+  <div class="modal" style="max-width:620px">
+    <div class="modal-head"><div class="modal-title">📥 Import NG Excel/CSV</div><button class="modal-close" onclick="closeModal('deptImportModal')">×</button></div>
+    <div class="modal-body">
+      <div class="alert alert-warn" style="font-size:12px">⚠️ Columns: date, department, item, defect_type, qty, cause</div>
+      <div class="import-zone" onclick="document.getElementById('deptImportFile').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDeptFileDrop(event)">
+        <div style="font-size:36px">📂</div><p style="margin-top:8px">ກົດ ຫຼື ລາກໄຟລ໌ Excel/CSV</p>
+        <input type="file" id="deptImportFile" accept=".xlsx,.xls,.csv" style="display:none" onchange="handleDeptFileSelect(event)">
+      </div>
+      <div id="deptImportPreview" style="margin-top:12px;display:none"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-gray" onclick="closeModal('deptImportModal')">ຍົກເລີກ</button>
+      <button class="btn btn-primary" onclick="confirmDeptImport()" id="deptImportBtn" disabled>📥 Import</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Stock -->
+<div class="modal-bg" id="stockModal">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-head"><div class="modal-title" id="stockModalTitle">ເພີ່ມ Stock</div><button class="modal-close" onclick="closeModal('stockModal')">×</button></div>
+    <div class="modal-body"><div id="stockModalMsg"></div><div id="stockFormFields"></div></div>
+    <div class="modal-foot">
+      <button class="btn btn-gray" onclick="closeModal('stockModal')">ຍົກເລີກ</button>
+      <button class="btn btn-primary" onclick="saveStockRow()">💾 ບັນທຶກ</button>
+    </div>
+  </div>
+</div>
+
+<!-- Import Stock -->
+<div class="modal-bg" id="stockImportModal">
+  <div class="modal" style="max-width:640px">
+    <div class="modal-head"><div class="modal-title" id="stockImportTitle">📥 Import Stock</div><button class="modal-close" onclick="closeModal('stockImportModal')">×</button></div>
+    <div class="modal-body">
+      <div class="alert alert-warn" style="font-size:12px" id="stockImportHint">⚠️ Stock IN: date, semi_code, name, department, qty, cost, zone<br>Stock OUT: date, semi_code, name, department, qty, zone</div>
+      <div class="import-zone" onclick="document.getElementById('stockImportFile').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleStockFileDrop(event)">
+        <div style="font-size:36px">📂</div><p style="margin-top:8px">ກົດ ຫຼື ລາກໄຟລ໌ Excel/CSV</p>
+        <input type="file" id="stockImportFile" accept=".xlsx,.xls,.csv" style="display:none" onchange="handleStockFileSelect(event)">
+      </div>
+      <div id="stockImportPreview" style="margin-top:12px;display:none"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-gray" onclick="closeModal('stockImportModal')">ຍົກເລີກ</button>
+      <button class="btn btn-primary" onclick="doStockImport()" id="stockImportBtn" disabled>📥 Import</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Master -->
+<div class="modal-bg" id="masterModal">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-head"><div class="modal-title" id="masterModalTitle">ເພີ່ມ Semi Code</div><button class="modal-close" onclick="closeModal('masterModal')">×</button></div>
+    <div class="modal-body"><div id="masterModalMsg"></div><div id="masterFormFields"></div></div>
+    <div class="modal-foot">
+      <button class="btn btn-gray" onclick="closeModal('masterModal')">ຍົກເລີກ</button>
+      <button class="btn btn-primary" onclick="saveMasterRow()">💾 ບັນທຶກ</button>
+    </div>
+  </div>
+</div>
+
+<!-- Import Master -->
+<div class="modal-bg" id="masterImportModal">
+  <div class="modal" style="max-width:640px">
+    <div class="modal-head"><div class="modal-title">📥 Import Master Data</div><button class="modal-close" onclick="closeModal('masterImportModal')">×</button></div>
+    <div class="modal-body">
+      <div class="alert alert-warn" style="font-size:12px">⚠️ Semi Code: semi_code, name_lao, name_en, cost, department | Master Plan: semi_code, name, department, plan_qty, unit</div>
+      <div class="import-zone" onclick="document.getElementById('masterImportFile').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleMasterFileDrop(event)">
+        <div style="font-size:36px">📂</div><p style="margin-top:8px">ກົດ ຫຼື ລາກໄຟລ໌ Excel/CSV</p>
+        <input type="file" id="masterImportFile" accept=".xlsx,.xls,.csv" style="display:none" onchange="handleMasterFileSelect(event)">
+      </div>
+      <div id="masterImportPreview" style="margin-top:12px;display:none"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-gray" onclick="closeModal('masterImportModal')">ຍົກເລີກ</button>
+      <button class="btn btn-primary" onclick="doMasterImport()" id="masterImportBtn" disabled>📥 Import</button>
+    </div>
+  </div>
+</div>
+
+<!-- User Modal -->
+<div class="modal-bg" id="userModal">
+  <div class="modal" style="max-width:500px">
+    <div class="modal-head"><div class="modal-title" id="userModalTitle">ເພີ່ມ User</div><button class="modal-close" onclick="closeModal('userModal')">×</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="uId">
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Username<span class="req">*</span></label><input type="text" class="form-control" id="uUser"></div>
+        <div class="form-group"><label class="form-label">ຊື່ເຕັມ<span class="req">*</span></label><input type="text" class="form-control" id="uName"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Email<span class="req">*</span></label><input type="email" class="form-control" id="uEmail"></div>
+        <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-control" id="uPass" placeholder="(ຫວ່າງ=ບໍ່ປ່ຽນ)"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Role<span class="req">*</span></label>
+          <select class="form-control" id="uRole">
+            <option value="admin">Admin</option>
+            <option value="manager">Manager</option>
+            <option value="leader">Leader</option>
+            <option value="user">User</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">ພະແນກ</label>
+          <select class="form-control" id="uDept">
+            <option value="ALL">ທຸກພະແນກ</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">ສິດທິ Module</label>
+        <div id="uPermissions"></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-gray" onclick="closeModal('userModal')">ຍົກເລີກ</button>
+      <button class="btn btn-primary" onclick="saveUser()">💾 ບັນທຶກ</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Delete -->
+<div class="modal-bg" id="confirmModal">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-head"><div class="modal-title">⚠️ ຢືນຢັນການລົບ</div><button class="modal-close" onclick="closeModal('confirmModal')">×</button></div>
+    <div class="modal-body"><p id="confirmMsg" style="color:var(--g700)">ທ່ານຕ້ອງການລົບລາຍການນີ້ບໍ?</p></div>
+    <div class="modal-foot">
+      <button class="btn btn-gray" onclick="closeModal('confirmModal')">ຍົກເລີກ</button>
+      <button class="btn btn-danger" id="confirmOkBtn">🗑️ ລົບ</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+// ============================================================
+// FIREBASE SETUP
+// ============================================================
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, setDoc, query, where, orderBy, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const FB = {
+  apiKey: "AIzaSyBq3ty0rw70wGE_QxwOe3SczEfXViWxx98",
+  authDomain: "epl-inventory.firebaseapp.com",
+  projectId: "epl-inventory",
+  storageBucket: "epl-inventory.firebasestorage.app",
+  messagingSenderId: "345481661658",
+  appId: "1:345481661658:web:60bef5a2eafdf3060829"
+};
+
+const app = initializeApp(FB);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// ============================================================
+// CONSTANTS
+// ============================================================
+const DEPTS = ['Injection','Flocky','Painting','Sewing','MWH','Packing','Planning'];
+const DEPT_COLORS = {
+  'Injection':'#1a56db','Flocky':'#7e3af2','Painting':'#e3a008',
+  'Sewing':'#e02424','MWH':'#059669','Packing':'#0694a2','Planning':'#6b7280'
+};
+const DEPT_ICONS = {
+  'Injection':'💉','Flocky':'🎨','Painting':'🖌️','Sewing':'🧵','MWH':'🏪','Packing':'📦','Planning':'📅'
+};
+const MONTHS_LO = ['','ມ.ກ','ກ.ພ','ມີ.ນ','ເມ.ສ','ພ.ພ','ມິ.ຖ','ກ.ລ','ສ.ຫ','ກ.ຍ','ຕ.ລ','ພ.ຈ','ທ.ວ'];
+const MODULES = ['dashboard','ng','stock','master','users'];
+
+// ============================================================
+// STATE
+// ============================================================
+let CU = null; // current user
+let LANG = 'lo';
+let ACTIVE_DEPT = 'Injection';
+let ACTIVE_DEPT_MODE = 'ng'; // ng or stock
+let STOCK_TAB = 'IN';
+let MASTER_TAB = 'semi';
+let PAGE_SIZE = 50;
+let _deptData = [];
+let _deptFiltered = [];
+let _deptPage = 1;
+let _stockData = [];
+let _stockFiltered = [];
+let _stockPage = 1;
+let _masterData = [];
+let _masterFiltered = [];
+let _masterPage = 1;
+let _dashCache = null;
+let _importRows = [];
+let _editId = null;
+let _charts = {};
+
+// ============================================================
+// UTILS
+// ============================================================
+function toast(msg, dur=2800) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.display='block';
+  setTimeout(()=>t.style.display='none', dur);
+}
+function loading(show, txt='Loading...') {
+  const ov = document.getElementById('loadOv');
+  ov.classList.toggle('show', show);
+  if(txt) document.getElementById('loadTxt').textContent = txt;
+}
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function fmtNum(n) { return n==null?'—':Number(n).toLocaleString(); }
+function fmtDate(d) { return d?String(d).slice(0,10):'—'; }
+function today() { return new Date().toISOString().slice(0,10); }
+function confirmAction(msg, cb) {
+  document.getElementById('confirmMsg').textContent = msg;
+  document.getElementById('confirmOkBtn').onclick = ()=>{ closeModal('confirmModal'); cb(); };
+  openModal('confirmModal');
+}
+
+// ============================================================
+// LANGUAGE
+// ============================================================
+const T = {
+  lo: {
+    welcome:'ສະບາຍດີ,', selectModule:'ເລືອກໂມດູນທີ່ຕ້ອງການ',
+    dashboard:'Dashboard', ng:'NG / Defect', stock:'Stock', master:'ຂໍ້ມູນຫຼັກ', users:'ຈັດການ User',
+    stockIn:'Stock IN', stockOut:'Stock OUT', balance:'Balance',
+    add:'ເພີ່ມ', edit:'ແກ້ໄຂ', delete:'ລົບ', save:'ບັນທຶກ', cancel:'ຍົກເລີກ',
+    allDept:'ທຸກພະແນກ', allYears:'ທຸກປີ', allMonths:'ທຸກເດືອນ',
+  },
+  en: {
+    welcome:'Welcome,', selectModule:'Select a module',
+    dashboard:'Dashboard', ng:'NG / Defect', stock:'Stock', master:'Master Data', users:'User Management',
+    stockIn:'Stock IN', stockOut:'Stock OUT', balance:'Balance',
+    add:'Add', edit:'Edit', delete:'Delete', save:'Save', cancel:'Cancel',
+    allDept:'All Departments', allYears:'All Years', allMonths:'All Months',
+  }
+};
+
+window.setLang = function(l) {
+  LANG = l;
+  document.querySelectorAll('.lang-btn,.lsw-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent.includes(l==='lo'?'ລາວ':'EN')||b.textContent.includes(l==='lo'?'ລາວ':'English'));
+  });
+};
+
+// ============================================================
+// LOGIN / LOGOUT
+// ============================================================
+window.doLogin = async function() {
+  const u = document.getElementById('fUser').value.trim();
+  const p = document.getElementById('fPass').value.trim();
+  const err = document.getElementById('loginErr');
+  err.style.display='none';
+  if(!u||!p){err.textContent='⚠️ ກະລຸນາໃສ່ຂໍ້ມູນໃຫ້ຄົບ';err.style.display='block';return;}
+  loading(true,'ກຳລັງເຂົ້າລະບົບ...');
+  try {
+    const q = query(collection(db,'users'), where('username','==',u));
+    const snap = await getDocs(q);
+    if(snap.empty) throw new Error('ບໍ່ພົບ Username ນີ້');
+    const ud = snap.docs[0]; const udata = ud.data();
+    await signInWithEmailAndPassword(auth, udata.email, p);
+    CU = {id:ud.id, ...udata};
+    sessionStorage.setItem('epl_user', JSON.stringify(CU));
+    initApp();
+  } catch(e) {
+    err.textContent = '❌ ' + (e.message.includes('ບໍ່ພົບ')?e.message:'ຊື່ຜູ້ໃຊ້ ຫຼື ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ');
+    err.style.display='block';
+  } finally { loading(false); }
+};
+
+window.doLogout = async function() {
+  if(!confirm('ອອກຈາກລະບົບ?')) return;
+  await signOut(auth);
+  sessionStorage.removeItem('epl_user');
+  CU = null;
+  document.getElementById('mainApp').style.display='none';
+  document.getElementById('loginPage').style.display='flex';
+};
+
+// ============================================================
+// INIT APP
+// ============================================================
+function initApp() {
+  document.getElementById('loginPage').style.display='none';
+  document.getElementById('mainApp').style.display='block';
+  const name = CU.name || CU.username;
+  document.getElementById('sbAv').textContent = name.charAt(0).toUpperCase();
+  document.getElementById('sbName').textContent = name;
+  document.getElementById('sbRole').textContent = CU.role?.toUpperCase();
+  document.getElementById('homeUserName').textContent = name;
+  document.getElementById('topDate').textContent = new Date().toLocaleDateString('lo-LA');
+
+  // Admin menu
+  if(['admin','manager'].includes(CU.role)) {
+    document.getElementById('adminMenuWrap').style.display='block';
+  }
+
+  // Build dept nav
+  buildDeptNav();
+  buildModuleGrid();
+  populateDeptFilters();
+  showPage('home');
+}
+
+// ============================================================
+// BUILD SIDEBAR DEPT NAV
+// ============================================================
+function buildDeptNav() {
+  const list = document.getElementById('deptNavList');
+  list.innerHTML = DEPTS.map(d => `
+    <div class="nav-dept-wrap">
+      <div class="nav-dept-hdr" onclick="toggleDeptNav(this,'${d}')">
+        <span style="font-size:15px">${DEPT_ICONS[d]||'🏭'}</span>
+        <span style="font-size:13px">${d}</span>
+        <span class="nav-dept-arrow">›</span>
+      </div>
+      <div class="nav-dept-children">
+        <div class="nav-sub" onclick="openDeptPage('${d}','ng')">❌ NG</div>
+        <div class="nav-sub" onclick="openDeptPage('${d}','stock')">📦 Stock</div>
+      </div>
+    </div>`).join('');
+}
+
+window.toggleDeptNav = function(el, dept) {
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+};
+
+function buildModuleGrid() {
+  const modules = [
+    {id:'dashboard',icon:'📊',bg:'#1a56db',name:'Dashboard',desc:'KPI, Charts, Reports'},
+    {id:'ng',icon:'❌',bg:'#e02424',name:'NG / Defect',desc:'ບັນທຶກ NG ທຸກພະແນກ'},
+    {id:'stock',icon:'📦',bg:'#059669',name:'Stock',desc:'IN / OUT / Balance'},
+    {id:'master',icon:'🗄️',bg:'#0694a2',name:'Master Data',desc:'Semi Code / Plan'},
+  ];
+  if(['admin','manager'].includes(CU.role)) {
+    modules.push({id:'users',icon:'👥',bg:'#7e3af2',name:'ຈັດການ User',desc:'Users & Permissions'});
+  }
+  document.getElementById('moduleGrid').innerHTML = modules.map(m => `
+    <div class="module-card" onclick="showPage('${m.id==='ng'?'dept':''}${m.id==='ng'?'':m.id}')${m.id==='ng'?'; openDeptPage(DEPTS[0],\'ng\')':''}" >
+      <div class="module-icon" style="background:${m.bg}20;color:${m.bg}"><span style="font-size:26px">${m.icon}</span></div>
+      <div class="module-name">${m.name}</div>
+      <div class="module-desc">${m.desc}</div>
+    </div>`).join('');
+  // fix onclick for ng
+  document.getElementById('moduleGrid').querySelectorAll('.module-card').forEach((card, i) => {
+    if(modules[i].id === 'ng') {
+      card.onclick = () => openDeptPage(DEPTS[0], 'ng');
+    } else if(modules[i].id !== 'users') {
+      card.onclick = () => showPage(modules[i].id);
+    } else {
+      card.onclick = () => showPage('users');
+    }
+  });
+}
+
+function populateDeptFilters() {
+  const selects = ['fDept','stockDeptFilter','topDept','balDeptFilter'];
+  selects.forEach(id => {
+    const sel = document.getElementById(id);
+    if(!sel) return;
+    const cur = sel.value;
+    sel.innerHTML = `<option value="ALL">ທຸກພະແນກ</option>` + DEPTS.map(d=>`<option value="${d}">${d}</option>`).join('');
+    sel.value = cur||'ALL';
+  });
+  // User dept
+  const uDept = document.getElementById('uDept');
+  if(uDept) uDept.innerHTML = `<option value="ALL">ທຸກພະແນກ</option>` + DEPTS.map(d=>`<option value="${d}">${d}</option>`).join('');
+}
+
+// ============================================================
+// PAGE NAVIGATION
+// ============================================================
+window.showPage = function(name) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const pg = document.getElementById('page'+name.charAt(0).toUpperCase()+name.slice(1));
+  if(pg) pg.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
+  const ni = document.getElementById('ni_'+name);
+  if(ni) ni.classList.add('active');
+  const titles = {home:'🏠 Home',dashboard:'📊 Dashboard',dept:'❌ NG / Defect',stock:'📦 Stock',master:'🗄️ Master Data',users:'👥 ຈັດການ User'};
+  document.getElementById('topTitle').textContent = titles[name]||name;
+  if(name==='dashboard') loadDashboard();
+  if(name==='stock') loadStockPage();
+  if(name==='master') loadMasterPage();
+  if(name==='users') loadUsers();
+};
+
+window.openDeptPage = function(dept, mode) {
+  ACTIVE_DEPT = dept;
+  ACTIVE_DEPT_MODE = mode;
+  showPage('dept');
+  const color = DEPT_COLORS[dept]||'#1a56db';
+  document.getElementById('deptHeaderBg').style.background = `linear-gradient(135deg,${color},${color}cc)`;
+  document.getElementById('deptHeaderIcon').textContent = DEPT_ICONS[dept]||'🏭';
+  document.getElementById('deptPageTitle').textContent = `${dept} — ${mode==='ng'?'NG / Defect':'Stock'}`;
+  document.getElementById('deptHeaderSub').textContent = mode==='ng'?'NG / Defect Tracking':'Inventory Management';
+  document.getElementById('topTitle').textContent = `${DEPT_ICONS[dept]} ${dept} — ${mode==='ng'?'NG':'Stock'}`;
+  // highlight nav
+  document.querySelectorAll('.nav-sub').forEach(s=>s.classList.remove('active'));
+  loadDeptPage();
+};
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+window.loadDashboard = async function() {
+  loading(true,'ໂຫຼດ Dashboard...');
+  try {
+    const yr = document.getElementById('fYear').value;
+    const mo = document.getElementById('fMonth').value;
+    const dp = document.getElementById('fDept').value;
+
+    const [stockSnap, ngSnap, planSnap] = await Promise.all([
+      getDocs(collection(db,'stock')),
+      getDocs(collection(db,'ng')),
+      getDocs(collection(db,'planning'))
+    ]);
+
+    let stocks=[]; stockSnap.forEach(d=>stocks.push({id:d.id,...d.data()}));
+    let ngs=[]; ngSnap.forEach(d=>ngs.push({id:d.id,...d.data()}));
+    let plans=[]; planSnap.forEach(d=>plans.push({id:d.id,...d.data()}));
+
+    // Filter by year/month/dept
+    function filterByDate(arr) {
+      return arr.filter(r=>{
+        const date = String(r.date||'');
+        if(yr!=='ALL' && !date.startsWith(yr)) return false;
+        if(mo!=='ALL' && date.slice(5,7)!==mo) return false;
+        if(dp!=='ALL' && r.department!==dp) return false;
+        return true;
+      });
+    }
+
+    const fStocks = filterByDate(stocks);
+    const fNGs = filterByDate(ngs);
+    const fPlans = dp==='ALL'?plans:plans.filter(p=>p.department===dp);
+
+    const stockIn = fStocks.filter(s=>s.type==='in');
+    const stockOut = fStocks.filter(s=>s.type==='out');
+    const totalIn = stockIn.reduce((a,b)=>a+(b.qty||0),0);
+    const totalOut = stockOut.reduce((a,b)=>a+(b.qty||0),0);
+    const totalCost = stockIn.reduce((a,b)=>a+(b.cost||0),0);
+    const totalNG = fNGs.reduce((a,b)=>a+(b.qty||0),0);
+    const ngRate = totalIn>0?(totalNG/totalIn*100).toFixed(1):0;
+
+    // Plan stats
+    const totalPlan = fPlans.reduce((a,b)=>a+(b.plan_qty||0),0);
+    const totalActual = fPlans.reduce((a,b)=>a+(b.actual_qty||0),0);
+    const planRate = totalPlan>0?(totalActual/totalPlan*100).toFixed(1):0;
+
+    // NG by dept
+    const ngByDept = {};
+    DEPTS.forEach(d=>ngByDept[d]=0);
+    fNGs.forEach(n=>{ if(ngByDept[n.department]!=null) ngByDept[n.department]+=(n.qty||0); });
+    const topNGDept = Object.entries(ngByDept).sort((a,b)=>b[1]-a[1])[0];
+
+    // Update KPIs
+    document.getElementById('kpi_in').textContent = fmtNum(totalIn);
+    document.getElementById('kpi_out').textContent = fmtNum(totalOut);
+    document.getElementById('kpi_bal').textContent = fmtNum(totalIn-totalOut);
+    document.getElementById('kpi_cost').textContent = fmtNum(totalCost);
+    document.getElementById('kpi_ng_total').textContent = fmtNum(totalNG);
+    document.getElementById('kpi_ng_rate').textContent = ngRate+'%';
+    document.getElementById('kpi_ng_dept').textContent = topNGDept?topNGDept[0]:'—';
+    document.getElementById('kpi_plan_rate').textContent = planRate+'%';
+
+    // Charts
+    renderStockBarChart(stocks, yr);
+    renderDeptPieChart(fStocks);
+    renderNGBarChart(fNGs);
+    renderPlanBarChart(fPlans);
+    renderMonthCompareChart(stocks);
+
+    // Dept Summary Table
+    renderDeptSummaryTable(fStocks, fNGs, fPlans);
+
+    // Top Items
+    _dashCache = {stocks:fStocks, ngs:fNGs};
+    renderTopItems();
+
+  } catch(e) { console.error(e); toast('❌ Error: '+e.message); }
+  finally { loading(false); }
+};
+
+function renderStockBarChart(stocks, yr) {
+  const monthIn = Array(12).fill(0);
+  const monthOut = Array(12).fill(0);
+  stocks.forEach(s=>{
+    if(!s.date) return;
+    if(yr!=='ALL' && !s.date.startsWith(yr)) return;
+    const m = parseInt(s.date.slice(5,7))-1;
+    if(m<0||m>11) return;
+    if(s.type==='in') monthIn[m]+=(s.qty||0);
+    if(s.type==='out') monthOut[m]+=(s.qty||0);
+  });
+  if(_charts.stockBar) _charts.stockBar.destroy();
+  _charts.stockBar = new Chart(document.getElementById('chartStockBar'),{
+    type:'bar',
+    data:{labels:MONTHS_LO.slice(1),datasets:[
+      {label:'Stock IN',data:monthIn,backgroundColor:'rgba(5,150,105,.75)',borderRadius:5},
+      {label:'Stock OUT',data:monthOut,backgroundColor:'rgba(224,36,36,.65)',borderRadius:5}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:11}}}},
+      scales:{x:{ticks:{font:{size:10}},grid:{color:'#f3f4f6'}},y:{ticks:{font:{size:10}},grid:{color:'#f3f4f6'}}}}
+  });
+}
+
+function renderDeptPieChart(fStocks) {
+  const deptTotals = DEPTS.map(d=>fStocks.filter(s=>s.type==='in'&&s.department===d).reduce((a,b)=>a+(b.qty||0),0));
+  if(_charts.deptPie) _charts.deptPie.destroy();
+  _charts.deptPie = new Chart(document.getElementById('chartDeptPie'),{
+    type:'doughnut',
+    data:{labels:DEPTS,datasets:[{data:deptTotals,backgroundColor:DEPTS.map(d=>DEPT_COLORS[d]||'#6b7280'),borderWidth:2,borderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:10},boxWidth:12}}}}
+  });
+}
+
+function renderNGBarChart(fNGs) {
+  const ngByDept = DEPTS.map(d=>fNGs.filter(n=>n.department===d).reduce((a,b)=>a+(b.qty||0),0));
+  if(_charts.ngBar) _charts.ngBar.destroy();
+  _charts.ngBar = new Chart(document.getElementById('chartNGBar'),{
+    type:'bar',
+    data:{labels:DEPTS,datasets:[{label:'NG Qty',data:ngByDept,backgroundColor:DEPTS.map(d=>DEPT_COLORS[d]||'#6b7280'),borderRadius:5}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{ticks:{font:{size:10}},grid:{display:false}},y:{ticks:{font:{size:10}},grid:{color:'#f3f4f6'}}}}
+  });
+}
+
+function renderPlanBarChart(fPlans) {
+  const planByDept = DEPTS.map(d=>{
+    const dp = fPlans.filter(p=>p.department===d);
+    return dp.reduce((a,b)=>a+(b.plan_qty||0),0);
+  });
+  const actualByDept = DEPTS.map(d=>{
+    const dp = fPlans.filter(p=>p.department===d);
+    return dp.reduce((a,b)=>a+(b.actual_qty||0),0);
+  });
+  if(_charts.planBar) _charts.planBar.destroy();
+  _charts.planBar = new Chart(document.getElementById('chartPlanBar'),{
+    type:'bar',
+    data:{labels:DEPTS,datasets:[
+      {label:'Plan',data:planByDept,backgroundColor:'rgba(26,86,219,.6)',borderRadius:5},
+      {label:'Actual',data:actualByDept,backgroundColor:'rgba(5,150,105,.7)',borderRadius:5}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10}}}},
+      scales:{x:{ticks:{font:{size:10}},grid:{display:false}},y:{ticks:{font:{size:10}},grid:{color:'#f3f4f6'}}}}
+  });
+}
+
+function renderMonthCompareChart(stocks) {
+  const curYear = new Date().getFullYear();
+  const prevYear = curYear-1;
+  const curIn = Array(12).fill(0);
+  const prevIn = Array(12).fill(0);
+  stocks.forEach(s=>{
+    if(!s.date||s.type!=='in') return;
+    const y = parseInt(s.date.slice(0,4));
+    const m = parseInt(s.date.slice(5,7))-1;
+    if(y===curYear) curIn[m]+=(s.qty||0);
+    if(y===prevYear) prevIn[m]+=(s.qty||0);
+  });
+  if(_charts.monthCompare) _charts.monthCompare.destroy();
+  _charts.monthCompare = new Chart(document.getElementById('chartMonthCompare'),{
+    type:'line',
+    data:{labels:MONTHS_LO.slice(1),datasets:[
+      {label:String(curYear),data:curIn,borderColor:'#059669',backgroundColor:'rgba(5,150,105,.1)',fill:true,tension:.3,pointRadius:4},
+      {label:String(prevYear),data:prevIn,borderColor:'#6b7280',backgroundColor:'rgba(107,114,128,.08)',fill:true,tension:.3,pointRadius:4,borderDash:[5,5]}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:11}}}},
+      scales:{x:{ticks:{font:{size:10}},grid:{color:'#f3f4f6'}},y:{ticks:{font:{size:10}},grid:{color:'#f3f4f6'}}}}
+  });
+}
+
+function renderDeptSummaryTable(fStocks, fNGs, fPlans) {
+  const tbody = document.getElementById('deptSummaryTbody');
+  tbody.innerHTML = DEPTS.map(d=>{
+    const dIn = fStocks.filter(s=>s.type==='in'&&s.department===d).reduce((a,b)=>a+(b.qty||0),0);
+    const dOut = fStocks.filter(s=>s.type==='out'&&s.department===d).reduce((a,b)=>a+(b.qty||0),0);
+    const dBal = dIn-dOut;
+    const dNG = fNGs.filter(n=>n.department===d).reduce((a,b)=>a+(b.qty||0),0);
+    const ngRate = dIn>0?(dNG/dIn*100).toFixed(1):0;
+    const dPlan = fPlans.filter(p=>p.department===d).reduce((a,b)=>a+(b.plan_qty||0),0);
+    const dActual = fPlans.filter(p=>p.department===d).reduce((a,b)=>a+(b.actual_qty||0),0);
+    const planRate = dPlan>0?(dActual/dPlan*100).toFixed(1):0;
+    const status = dBal>=0?'<span class="badge b-green">ປົກກະຕິ</span>':'<span class="badge b-red">ຂາດ</span>';
+    return `<tr>
+      <td><b style="color:${DEPT_COLORS[d]}">${DEPT_ICONS[d]} ${d}</b></td>
+      <td style="color:#059669"><b>${fmtNum(dIn)}</b></td>
+      <td style="color:#e02424"><b>${fmtNum(dOut)}</b></td>
+      <td><b>${fmtNum(dBal)}</b></td>
+      <td style="color:#e3a008">${fmtNum(dNG)}</td>
+      <td><span class="badge ${parseFloat(ngRate)<2?'b-green':parseFloat(ngRate)<5?'b-yellow':'b-red'}">${ngRate}%</span></td>
+      <td>${fmtNum(dPlan)}</td>
+      <td>${fmtNum(dActual)}</td>
+      <td><span class="badge ${parseFloat(planRate)>=90?'b-green':parseFloat(planRate)>=70?'b-yellow':'b-red'}">${planRate}%</span></td>
+      <td>${status}</td>
+    </tr>`;
+  }).join('');
+}
+
+window.renderTopItems = function() {
+  if(!_dashCache) return;
+  const n = parseInt(document.getElementById('topN').value)||10;
+  const criteria = document.getElementById('topCriteria').value;
+  const dept = document.getElementById('topDept').value;
+  const {stocks, ngs} = _dashCache;
+
+  // Build item map
+  const itemMap = {};
+  stocks.forEach(s=>{
+    if(dept!=='ALL'&&s.department!==dept) return;
+    const key = s.semi_code||s.name||'Unknown';
+    if(!itemMap[key]) itemMap[key]={semi_code:s.semi_code||'',name:s.name||s.semi_code||'',dept:s.department||'',in:0,out:0,ng:0};
+    if(s.type==='in') itemMap[key].in+=(s.qty||0);
+    if(s.type==='out') itemMap[key].out+=(s.qty||0);
+  });
+  ngs.forEach(ng=>{
+    if(dept!=='ALL'&&ng.department!==dept) return;
+    const key = ng.semi_code||ng.item||'Unknown';
+    if(!itemMap[key]) itemMap[key]={semi_code:ng.semi_code||'',name:ng.item||key,dept:ng.department||'',in:0,out:0,ng:0};
+    itemMap[key].ng+=(ng.qty||0);
+  });
+
+  let items = Object.values(itemMap).map(i=>({...i,bal:i.in-i.out,ng_rate:i.in>0?(i.ng/i.in*100).toFixed(1):0}));
+
+  // Sort by criteria
+  const sortFn = {
+    ng_qty:(a,b)=>b.ng-a.ng,
+    stock_in:(a,b)=>b.in-a.in,
+    stock_out:(a,b)=>b.out-a.out,
+    balance_high:(a,b)=>b.bal-a.bal,
+    balance_low:(a,b)=>a.bal-b.bal,
+  };
+  items.sort(sortFn[criteria]||(()=>0));
+  items = items.slice(0,n);
+
+  const tbody = document.getElementById('topItemsTbody');
+  if(!items.length){tbody.innerHTML='<tr class="empty-row"><td colspan="9">ບໍ່ມີຂໍ້ມູນ</td></tr>';return;}
+  tbody.innerHTML = items.map((item,i)=>`<tr>
+    <td><span class="top-rank">${i+1}</span></td>
+    <td>${item.semi_code||'—'}</td>
+    <td><b>${item.name||'—'}</b></td>
+    <td><span class="badge" style="background:${DEPT_COLORS[item.dept]||'#6b7280'}22;color:${DEPT_COLORS[item.dept]||'#6b7280'}">${item.dept||'—'}</span></td>
+    <td style="color:#059669"><b>${fmtNum(item.in)}</b></td>
+    <td style="color:#e02424"><b>${fmtNum(item.out)}</b></td>
+    <td><b>${fmtNum(item.bal)}</b></td>
+    <td style="color:#e3a008"><b>${fmtNum(item.ng)}</b></td>
+    <td><span class="badge ${parseFloat(item.ng_rate)<2?'b-green':parseFloat(item.ng_rate)<5?'b-yellow':'b-red'}">${item.ng_rate}%</span></td>
+  </tr>`).join('');
+};
+
+window.resetDashFilter = function() {
+  document.getElementById('fYear').value='ALL';
+  document.getElementById('fMonth').value='ALL';
+  document.getElementById('fDept').value='ALL';
+  loadDashboard();
+};
+
+// ============================================================
+// DEPT PAGE (NG)
+// ============================================================
+async function loadDeptPage() {
+  loading(true,'ໂຫຼດຂໍ້ມູນ...');
+  try {
+    const col = ACTIVE_DEPT_MODE==='ng'?'ng':'stock';
+    let q;
+    if(ACTIVE_DEPT_MODE==='ng') {
+      q = query(collection(db,col), where('department','==',ACTIVE_DEPT));
+    } else {
+      q = query(collection(db,col), where('department','==',ACTIVE_DEPT));
+    }
+    const snap = await getDocs(q);
+    _deptData = []; snap.forEach(d=>_deptData.push({id:d.id,...d.data()}));
+    _deptData.sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+    _deptFiltered = [..._deptData];
+    _deptPage = 1;
+    renderDeptTable();
+  } catch(e) { toast('❌ '+e.message); }
+  finally { loading(false); }
+}
+
+function renderDeptTable() {
+  const start = (_deptPage-1)*PAGE_SIZE;
+  const rows = _deptFiltered.slice(start, start+PAGE_SIZE);
+  const isNG = ACTIVE_DEPT_MODE==='ng';
+
+  const thead = document.getElementById('deptThead');
+  const tbody = document.getElementById('deptTbody');
+
+  if(isNG) {
+    thead.innerHTML = `<tr><th>#</th><th>ວັນທີ</th><th>ພະແນກ</th><th>ລາຍການ</th><th>ປະເພດ Defect</th><th>ຈຳນວນ NG</th><th>ສາເຫດ</th><th>ບັນທຶກໂດຍ</th><th>Action</th></tr>`;
+    tbody.innerHTML = rows.length?rows.map((r,i)=>`<tr>
+      <td>${start+i+1}</td>
+      <td>${fmtDate(r.date)}</td>
+      <td><span class="badge b-blue">${r.department||'—'}</span></td>
+      <td><b>${r.item||'—'}</b></td>
+      <td><span class="badge b-yellow">${r.defect_type||r.defectType||'—'}</span></td>
+      <td style="color:#e02424"><b>${fmtNum(r.qty)}</b></td>
+      <td>${r.cause||'—'}</td>
+      <td style="font-size:11px;color:var(--g500)">${r.createdBy||'—'}</td>
+      <td class="tbl-actions">${canEdit(r)?`<button class="btn btn-gray btn-sm" onclick="editDeptRow('${r.id}')">✏️</button><button class="btn btn-danger btn-sm" onclick="deleteDeptRow('${r.id}')">🗑️</button>`:'—'}</td>
+    </tr>`).join(''):'<tr class="empty-row"><td colspan="9">ບໍ່ມີຂໍ້ມູນ</td></tr>';
+  } else {
+    thead.innerHTML = `<tr><th>#</th><th>ວັນທີ</th><th>ປະເພດ</th><th>Semi Code</th><th>ຊື່ສິນຄ້າ</th><th>ພະແນກ</th><th>Qty</th><th>ມູນຄ່າ</th><th>Zone</th><th>Action</th></tr>`;
+    tbody.innerHTML = rows.length?rows.map((r,i)=>`<tr>
+      <td>${start+i+1}</td>
+      <td>${fmtDate(r.date)}</td>
+      <td><span class="badge ${r.type==='in'?'b-green':'b-red'}">${r.type==='in'?'IN':'OUT'}</span></td>
+      <td>${r.semi_code||'—'}</td>
+      <td><b>${r.name||'—'}</b></td>
+      <td>${r.department||'—'}</td>
+      <td><b>${fmtNum(r.qty)}</b></td>
+      <td>${fmtNum(r.cost)}</td>
+      <td>${r.zone||'—'}</td>
+      <td class="tbl-actions">${canEdit(r)?`<button class="btn btn-gray btn-sm" onclick="editDeptRow('${r.id}')">✏️</button><button class="btn btn-danger btn-sm" onclick="deleteDeptRow('${r.id}')">🗑️</button>`:'—'}</td>
+    </tr>`).join(''):'<tr class="empty-row"><td colspan="10">ບໍ່ມີຂໍ້ມູນ</td></tr>';
+  }
+
+  document.getElementById('deptRecordCount').textContent = `📋 ${_deptFiltered.length} ລາຍການ`;
+  renderPagination('deptPagBar', _deptFiltered.length, _deptPage, (p)=>{ _deptPage=p; renderDeptTable(); });
+}
+
+function canEdit(row) {
+  if(['admin','manager'].includes(CU.role)) return true;
+  return row.department===CU.department || row.createdBy===CU.username;
+}
+
+window.filterDeptTable = function() {
+  const search = document.getElementById('deptSearch').value.toLowerCase();
+  const from = document.getElementById('deptDateFrom').value;
+  const to = document.getElementById('deptDateTo').value;
+  _deptFiltered = _deptData.filter(r=>{
+    if(from && r.date < from) return false;
+    if(to && r.date > to) return false;
+    if(search) {
+      const str = JSON.stringify(r).toLowerCase();
+      if(!str.includes(search)) return false;
+    }
+    return true;
+  });
+  _deptPage = 1;
+  renderDeptTable();
+};
+
+window.openDeptAddModal = function() {
+  _editId = null;
+  document.getElementById('deptRowModalTitle').textContent = `➕ ເພີ່ມ ${ACTIVE_DEPT_MODE==='ng'?'NG':'Stock'}`;
+  const isNG = ACTIVE_DEPT_MODE==='ng';
+  document.getElementById('deptRowFields').innerHTML = isNG ? `
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">ວັນທີ<span class="req">*</span></label><input type="date" class="form-control" id="df_date" value="${today()}"></div>
+      <div class="form-group"><label class="form-label">ພະແນກ</label><input type="text" class="form-control" id="df_dept" value="${ACTIVE_DEPT}" readonly></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">ລາຍການ<span class="req">*</span></label><input type="text" class="form-control" id="df_item" placeholder="ຊື່ສິນຄ້າ"></div>
+      <div class="form-group"><label class="form-label">ປະເພດ Defect<span class="req">*</span></label><input type="text" class="form-control" id="df_defect" placeholder="ຮອຍຂີດ, ສີຜິດ..."></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">ຈຳນວນ NG<span class="req">*</span></label><input type="number" class="form-control" id="df_qty" placeholder="0"></div>
+      <div class="form-group"><label class="form-label">ສາເຫດ</label><input type="text" class="form-control" id="df_cause" placeholder="ສາເຫດ..."></div>
+    </div>` : `
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">ວັນທີ<span class="req">*</span></label><input type="date" class="form-control" id="df_date" value="${today()}"></div>
+      <div class="form-group"><label class="form-label">ພະແນກ</label><input type="text" class="form-control" id="df_dept" value="${ACTIVE_DEPT}" readonly></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Semi Code</label><input type="text" class="form-control" id="df_semi" placeholder="Semi Code"></div>
+      <div class="form-group"><label class="form-label">ຊື່ສິນຄ້າ<span class="req">*</span></label><input type="text" class="form-control" id="df_name" placeholder="ຊື່ສິນຄ້າ"></div>
+    </div>
+    <div class="form-row-3">
+      <div class="form-group"><label class="form-label">Qty<span class="req">*</span></label><input type="number" class="form-control" id="df_qty" placeholder="0"></div>
+      <div class="form-group"><label class="form-label">ມູນຄ່າ</label><input type="number" class="form-control" id="df_cost" placeholder="0"></div>
+      <div class="form-group"><label class="form-label">Zone</label><input type="text" class="form-control" id="df_zone" placeholder="Zone"></div>
+    </div>`;
+  document.getElementById('deptRowMsg').innerHTML='';
+  openModal('deptRowModal');
+};
+
+window.editDeptRow = async function(id) {
+  _editId = id;
+  const row = _deptData.find(r=>r.id===id);
+  if(!row) return;
+  openDeptAddModal();
+  document.getElementById('deptRowModalTitle').textContent = '✏️ ແກ້ໄຂ';
+  setTimeout(()=>{
+    const isNG = ACTIVE_DEPT_MODE==='ng';
+    if(isNG) {
+      if(document.getElementById('df_date')) document.getElementById('df_date').value=row.date||'';
+      if(document.getElementById('df_item')) document.getElementById('df_item').value=row.item||'';
+      if(document.getElementById('df_defect')) document.getElementById('df_defect').value=row.defect_type||row.defectType||'';
+      if(document.getElementById('df_qty')) document.getElementById('df_qty').value=row.qty||0;
+      if(document.getElementById('df_cause')) document.getElementById('df_cause').value=row.cause||'';
+    } else {
+      if(document.getElementById('df_date')) document.getElementById('df_date').value=row.date||'';
+      if(document.getElementById('df_semi')) document.getElementById('df_semi').value=row.semi_code||'';
+      if(document.getElementById('df_name')) document.getElementById('df_name').value=row.name||'';
+      if(document.getElementById('df_qty')) document.getElementById('df_qty').value=row.qty||0;
+      if(document.getElementById('df_cost')) document.getElementById('df_cost').value=row.cost||0;
+      if(document.getElementById('df_zone')) document.getElementById('df_zone').value=row.zone||'';
+    }
+  },100);
+};
+
+window.saveDeptRow = async function() {
+  const isNG = ACTIVE_DEPT_MODE==='ng';
+  let data;
+  if(isNG) {
+    const date = document.getElementById('df_date')?.value;
+    const item = document.getElementById('df_item')?.value.trim();
+    const defect_type = document.getElementById('df_defect')?.value.trim();
+    const qty = parseInt(document.getElementById('df_qty')?.value)||0;
+    const cause = document.getElementById('df_cause')?.value.trim();
+    if(!date||!item||!defect_type||!qty){toast('⚠️ ໃສ່ຂໍ້ມູນໃຫ້ຄົບ');return;}
+    data = {date,department:ACTIVE_DEPT,item,defect_type,qty,cause,updatedBy:CU.username,updatedAt:serverTimestamp()};
+  } else {
+    const date = document.getElementById('df_date')?.value;
+    const name = document.getElementById('df_name')?.value.trim();
+    const qty = parseInt(document.getElementById('df_qty')?.value)||0;
+    if(!date||!name||!qty){toast('⚠️ ໃສ່ຂໍ້ມູນໃຫ້ຄົບ');return;}
+    data = {
+      date,department:ACTIVE_DEPT,type:'in',
+      semi_code:document.getElementById('df_semi')?.value.trim()||'',
+      name,qty,
+      cost:parseFloat(document.getElementById('df_cost')?.value)||0,
+      zone:document.getElementById('df_zone')?.value.trim()||'',
+      updatedBy:CU.username,updatedAt:serverTimestamp()
     };
+  }
+  loading(true,'ກຳລັງບັນທຶກ...');
+  try {
+    const col = isNG?'ng':'stock';
+    if(_editId) { await updateDoc(doc(db,col,_editId),data); toast('✅ ແກ້ໄຂສຳເລັດ'); }
+    else { data.createdBy=CU.username; data.createdAt=serverTimestamp(); await addDoc(collection(db,col),data); toast('✅ ເພີ່ມສຳເລັດ'); }
+    closeModal('deptRowModal');
+    loadDeptPage();
+  } catch(e) { toast('❌ '+e.message); }
+  finally { loading(false); }
+};
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+window.deleteDeptRow = function(id) {
+  confirmAction('ທ່ານຕ້ອງການລົບລາຍການນີ້ບໍ?', async()=>{
+    const col = ACTIVE_DEPT_MODE==='ng'?'ng':'stock';
+    await deleteDoc(doc(db,col,id));
+    toast('🗑️ ລົບສຳເລັດ');
+    loadDeptPage();
+  });
+};
 
-    if (sessionStorage.getItem('epl_user')) window.location.href = 'home.html';
+// Export/Print Dept
+window.exportDeptCSV = function() {
+  const isNG = ACTIVE_DEPT_MODE==='ng';
+  const headers = isNG?['date','department','item','defect_type','qty','cause']:['date','type','semi_code','name','department','qty','cost','zone'];
+  let csv = '\uFEFF'+headers.join(',')+'\n';
+  csv += _deptFiltered.map(r=>headers.map(h=>`"${r[h]??''}"`).join(',')).join('\n');
+  downloadFile(csv, `${ACTIVE_DEPT}_${ACTIVE_DEPT_MODE}_${today()}.csv`, 'text/csv');
+};
 
-    // Language
-    const texts = {
-      lo: { user: 'ຊື່ຜູ້ໃຊ້ / Username', pass: 'ລະຫັດຜ່ານ / Password', btn: 'ເຂົ້າສູ່ລະບົບ / Login', err1: '⚠️ ກະລຸນາໃສ່ຊື່ຜູ້ໃຊ້ ແລະ ລະຫັດຜ່ານ', err2: '❌ ຊື່ຜູ້ໃຊ້ ຫຼື ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ', ok: '✅ ເຂົ້າລະບົບສຳເລັດ!' },
-      en: { user: 'Username', pass: 'Password', btn: 'Login', err1: '⚠️ Please enter username and password', err2: '❌ Invalid username or password', ok: '✅ Login successful!' }
-    };
+window.exportDeptExcel = function() {
+  const isNG = ACTIVE_DEPT_MODE==='ng';
+  const headers = isNG?['date','department','item','defect_type','qty','cause']:['date','type','semi_code','name','department','qty','cost','zone'];
+  const data = [headers, ..._deptFiltered.map(r=>headers.map(h=>r[h]??''))];
+  const ws = XLSX.utils.aoa_to_sheet(data);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,ACTIVE_DEPT);
+  XLSX.writeFile(wb,`${ACTIVE_DEPT}_${ACTIVE_DEPT_MODE}_${today()}.xlsx`);
+};
 
-    let lang = 'lo';
+window.printDeptTable = function() {
+  const isNG = ACTIVE_DEPT_MODE==='ng';
+  const headers = isNG?['ວັນທີ','ພະແນກ','ລາຍການ','ປະເພດ Defect','ຈຳນວນ NG','ສາເຫດ']:['ວັນທີ','ປະເພດ','Semi Code','ຊື່','ພະແນກ','Qty','ມູນຄ່າ','Zone'];
+  const keys = isNG?['date','department','item','defect_type','qty','cause']:['date','type','semi_code','name','department','qty','cost','zone'];
+  printTable(`${ACTIVE_DEPT} — ${ACTIVE_DEPT_MODE.toUpperCase()}`, headers, _deptFiltered.map(r=>keys.map(k=>r[k]??'')));
+};
 
-    window.setLang = (l) => {
-      lang = l;
-      document.getElementById('btnLao').classList.toggle('active', l === 'lo');
-      document.getElementById('btnEng').classList.toggle('active', l === 'en');
-      document.getElementById('lblUser').textContent = texts[l].user;
-      document.getElementById('lblPass').textContent = texts[l].pass;
-      document.getElementById('btnText').textContent = texts[l].btn;
-    };
+window.openDeptImportModal = function() {
+  _importRows=[];
+  document.getElementById('deptImportPreview').style.display='none';
+  document.getElementById('deptImportBtn').disabled=true;
+  document.getElementById('deptImportFile').value='';
+  openModal('deptImportModal');
+};
 
-    window.handleLogin = async () => {
-      const username = document.getElementById('username').value.trim();
-      const password = document.getElementById('password').value.trim();
-      const btn = document.getElementById('loginBtn');
-      const alertEl = document.getElementById('alert');
+window.handleDeptFileDrop = function(e) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag');
+  handleFileForImport(e.dataTransfer.files[0], 'dept');
+};
 
-      alertEl.className = 'alert';
+window.handleDeptFileSelect = function(e) { handleFileForImport(e.target.files[0],'dept'); };
 
-      if (!username || !password) {
-        alertEl.className = 'alert error';
-        alertEl.textContent = texts[lang].err1;
-        return;
+window.confirmDeptImport = async function() {
+  if(!_importRows.length) return;
+  loading(true,'ກຳລັງ Import...');
+  try {
+    const col = ACTIVE_DEPT_MODE==='ng'?'ng':'stock';
+    let count=0;
+    for(const row of _importRows) {
+      const data = {...row, department:row.department||ACTIVE_DEPT, createdBy:CU.username, createdAt:serverTimestamp()};
+      await addDoc(collection(db,col),data);
+      count++;
+    }
+    toast(`✅ Import ${count} ລາຍການສຳເລັດ`);
+    closeModal('deptImportModal');
+    loadDeptPage();
+  } catch(e) { toast('❌ '+e.message); }
+  finally { loading(false); }
+};
+
+// ============================================================
+// STOCK PAGE
+// ============================================================
+window.switchStockTab = function(tab) {
+  STOCK_TAB = tab;
+  ['IN','OUT','BAL'].forEach(t=>{
+    document.getElementById('stab_'+t.toLowerCase()).classList.toggle('active',t===tab);
+  });
+  document.getElementById('btnStockAdd').style.display = tab==='BAL'?'none':'';
+  loadStockPage();
+};
+
+window.loadStockPage = async function() {
+  loading(true,'ໂຫຼດ Stock...');
+  try {
+    const dept = document.getElementById('stockDeptFilter').value;
+    let q;
+    if(STOCK_TAB==='BAL') {
+      q = dept==='ALL'?getDocs(collection(db,'stock')):getDocs(query(collection(db,'stock'),where('department','==',dept)));
+    } else {
+      const type = STOCK_TAB.toLowerCase();
+      q = dept==='ALL'
+        ? getDocs(query(collection(db,'stock'),where('type','==',type)))
+        : getDocs(query(collection(db,'stock'),where('type','==',type),where('department','==',dept)));
+    }
+    const snap = await q;
+    _stockData = []; snap.forEach(d=>_stockData.push({id:d.id,...d.data()}));
+
+    if(STOCK_TAB==='BAL') {
+      // Calculate balance
+      const balMap = {};
+      _stockData.forEach(s=>{
+        const k = (s.semi_code||s.name||'?')+'_'+s.department;
+        if(!balMap[k]) balMap[k]={semi_code:s.semi_code||'',name:s.name||'',department:s.department||'',in:0,out:0,cost:0};
+        if(s.type==='in'){balMap[k].in+=(s.qty||0);balMap[k].cost+=(s.cost||0);}
+        if(s.type==='out') balMap[k].out+=(s.qty||0);
+      });
+      _stockData = Object.values(balMap).map(b=>({...b,balance:b.in-b.out}));
+    } else {
+      _stockData.sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+    }
+
+    _stockFiltered = [..._stockData];
+    _stockPage = 1;
+    renderStockTable();
+  } catch(e) { toast('❌ '+e.message); }
+  finally { loading(false); }
+};
+
+function renderStockTable() {
+  const start = (_stockPage-1)*PAGE_SIZE;
+  const rows = _stockFiltered.slice(start, start+PAGE_SIZE);
+  const thead = document.getElementById('stockThead');
+  const tbody = document.getElementById('stockTbody');
+
+  if(STOCK_TAB==='BAL') {
+    thead.innerHTML=`<tr><th>#</th><th>Semi Code</th><th>ຊື່ສິນຄ້າ</th><th>ພະແນກ</th><th>IN</th><th>OUT</th><th>ຍອດເຫຼືອ</th><th>ມູນຄ່າ</th><th>ສະຖານະ</th></tr>`;
+    tbody.innerHTML = rows.length?rows.map((r,i)=>`<tr>
+      <td>${start+i+1}</td><td>${r.semi_code||'—'}</td><td><b>${r.name||'—'}</b></td>
+      <td><span class="badge" style="background:${DEPT_COLORS[r.department]||'#6b7280'}22;color:${DEPT_COLORS[r.department]||'#6b7280'}">${r.department||'—'}</span></td>
+      <td style="color:#059669"><b>${fmtNum(r.in)}</b></td>
+      <td style="color:#e02424"><b>${fmtNum(r.out)}</b></td>
+      <td><b>${fmtNum(r.balance)}</b></td>
+      <td>${fmtNum(r.cost)}</td>
+      <td><span class="badge ${r.balance>=0?'b-green':'b-red'}">${r.balance>=0?'ປົກກະຕິ':'ຂາດ'}</span></td>
+    </tr>`).join(''):'<tr class="empty-row"><td colspan="9">ບໍ່ມີຂໍ້ມູນ</td></tr>';
+  } else {
+    thead.innerHTML=`<tr><th>#</th><th>ວັນທີ</th><th>Semi Code</th><th>ຊື່ສິນຄ້າ</th><th>ພະແນກ</th><th>Qty</th><th>ມູນຄ່າ</th><th>Zone</th><th>ໝາຍເຫດ</th><th>Action</th></tr>`;
+    tbody.innerHTML = rows.length?rows.map((r,i)=>`<tr>
+      <td>${start+i+1}</td><td>${fmtDate(r.date)}</td><td>${r.semi_code||'—'}</td>
+      <td><b>${r.name||'—'}</b></td>
+      <td><span class="badge" style="background:${DEPT_COLORS[r.department]||'#6b7280'}22;color:${DEPT_COLORS[r.department]||'#6b7280'}">${r.department||'—'}</span></td>
+      <td><b>${fmtNum(r.qty)}</b></td><td>${fmtNum(r.cost)}</td><td>${r.zone||'—'}</td>
+      <td style="font-size:11px">${r.remark||'—'}</td>
+      <td class="tbl-actions">${canEdit(r)?`<button class="btn btn-gray btn-sm" onclick="editStockRow('${r.id}')">✏️</button><button class="btn btn-danger btn-sm" onclick="deleteStockRow('${r.id}')">🗑️</button>`:'—'}</td>
+    </tr>`).join(''):'<tr class="empty-row"><td colspan="10">ບໍ່ມີຂໍ້ມູນ</td></tr>';
+  }
+  document.getElementById('stockRecordCount').textContent = `📋 ${_stockFiltered.length} ລາຍການ`;
+  renderPagination('stockPagBar', _stockFiltered.length, _stockPage, (p)=>{ _stockPage=p; renderStockTable(); });
+}
+
+window.filterStockTable = function() {
+  const search = document.getElementById('stockSearch').value.toLowerCase();
+  const from = document.getElementById('stockDateFrom').value;
+  const to = document.getElementById('stockDateTo').value;
+  _stockFiltered = _stockData.filter(r=>{
+    if(from && r.date < from) return false;
+    if(to && r.date > to) return false;
+    if(search && !JSON.stringify(r).toLowerCase().includes(search)) return false;
+    return true;
+  });
+  _stockPage=1; renderStockTable();
+};
+
+window.openStockAddModal = function() {
+  _editId=null;
+  document.getElementById('stockModalTitle').textContent=`➕ ເພີ່ມ Stock ${STOCK_TAB}`;
+  document.getElementById('stockFormFields').innerHTML=`
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">ວັນທີ<span class="req">*</span></label><input type="date" class="form-control" id="sf_date" value="${today()}"></div>
+      <div class="form-group"><label class="form-label">ພະແນກ<span class="req">*</span></label><select class="form-control" id="sf_dept">${DEPTS.map(d=>`<option value="${d}">${d}</option>`).join('')}</select></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Semi Code</label><input type="text" class="form-control" id="sf_semi" placeholder="Semi Code"></div>
+      <div class="form-group"><label class="form-label">ຊື່ສິນຄ້າ<span class="req">*</span></label><input type="text" class="form-control" id="sf_name" placeholder="ຊື່"></div>
+    </div>
+    <div class="form-row-3">
+      <div class="form-group"><label class="form-label">Qty<span class="req">*</span></label><input type="number" class="form-control" id="sf_qty" placeholder="0"></div>
+      <div class="form-group"><label class="form-label">ມູນຄ່າ (ກີບ)</label><input type="number" class="form-control" id="sf_cost" placeholder="0"></div>
+      <div class="form-group"><label class="form-label">Zone</label><input type="text" class="form-control" id="sf_zone" placeholder="Zone"></div>
+    </div>
+    <div class="form-group"><label class="form-label">ໝາຍເຫດ</label><input type="text" class="form-control" id="sf_remark" placeholder="(ຖ້າມີ)"></div>`;
+  document.getElementById('stockModalMsg').innerHTML='';
+  openModal('stockModal');
+};
+
+window.editStockRow = function(id) {
+  const r = _stockData.find(x=>x.id===id); if(!r) return;
+  _editId=id; openStockAddModal();
+  document.getElementById('stockModalTitle').textContent='✏️ ແກ້ໄຂ Stock';
+  setTimeout(()=>{
+    document.getElementById('sf_date').value=r.date||'';
+    document.getElementById('sf_dept').value=r.department||'';
+    document.getElementById('sf_semi').value=r.semi_code||'';
+    document.getElementById('sf_name').value=r.name||'';
+    document.getElementById('sf_qty').value=r.qty||0;
+    document.getElementById('sf_cost').value=r.cost||0;
+    document.getElementById('sf_zone').value=r.zone||'';
+    document.getElementById('sf_remark').value=r.remark||'';
+  },100);
+};
+
+window.saveStockRow = async function() {
+  const date=document.getElementById('sf_date')?.value;
+  const dept=document.getElementById('sf_dept')?.value;
+  const name=document.getElementById('sf_name')?.value.trim();
+  const qty=parseInt(document.getElementById('sf_qty')?.value)||0;
+  if(!date||!dept||!name||!qty){toast('⚠️ ໃສ່ຂໍ້ມູນໃຫ້ຄົບ');return;}
+  const data={
+    date,department:dept,type:STOCK_TAB.toLowerCase(),
+    semi_code:document.getElementById('sf_semi')?.value.trim()||'',
+    name,qty,
+    cost:parseFloat(document.getElementById('sf_cost')?.value)||0,
+    zone:document.getElementById('sf_zone')?.value.trim()||'',
+    remark:document.getElementById('sf_remark')?.value.trim()||'',
+    updatedBy:CU.username,updatedAt:serverTimestamp()
+  };
+  loading(true);
+  try {
+    if(_editId){await updateDoc(doc(db,'stock',_editId),data);toast('✅ ແກ້ໄຂສຳເລັດ');}
+    else{data.createdBy=CU.username;data.createdAt=serverTimestamp();await addDoc(collection(db,'stock'),data);toast('✅ ເພີ່ມສຳເລັດ');}
+    closeModal('stockModal'); loadStockPage();
+  }catch(e){toast('❌ '+e.message);}finally{loading(false);}
+};
+
+window.deleteStockRow = function(id) {
+  confirmAction('ລົບລາຍການ Stock ນີ້?', async()=>{
+    await deleteDoc(doc(db,'stock',id)); toast('🗑️ ລົບສຳເລັດ'); loadStockPage();
+  });
+};
+
+window.exportStockCSV = function() {
+  const headers = STOCK_TAB==='BAL'?['semi_code','name','department','in','out','balance','cost']:['date','type','semi_code','name','department','qty','cost','zone','remark'];
+  let csv='\uFEFF'+headers.join(',')+'\n';
+  csv+=_stockFiltered.map(r=>headers.map(h=>`"${r[h]??''}"`).join(',')).join('\n');
+  downloadFile(csv,`stock_${STOCK_TAB}_${today()}.csv`,'text/csv');
+};
+
+window.exportStockExcel = function() {
+  const headers = STOCK_TAB==='BAL'?['semi_code','name','department','in','out','balance','cost']:['date','type','semi_code','name','department','qty','cost','zone','remark'];
+  const data=[headers,..._stockFiltered.map(r=>headers.map(h=>r[h]??''))];
+  const ws=XLSX.utils.aoa_to_sheet(data);
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Stock '+STOCK_TAB);
+  XLSX.writeFile(wb,`stock_${STOCK_TAB}_${today()}.xlsx`);
+};
+
+window.printStockTable = function() {
+  const headers = STOCK_TAB==='BAL'?['Semi Code','ຊື່','ພະແນກ','IN','OUT','ຍອດ','ມູນຄ່າ']:['ວັນທີ','ປະເພດ','Semi Code','ຊື່','ພະແນກ','Qty','ມູນຄ່າ','Zone'];
+  const keys = STOCK_TAB==='BAL'?['semi_code','name','department','in','out','balance','cost']:['date','type','semi_code','name','department','qty','cost','zone'];
+  printTable('Stock '+STOCK_TAB, headers, _stockFiltered.map(r=>keys.map(k=>r[k]??'')));
+};
+
+window.openStockImportModal = function() {
+  _importRows=[];
+  document.getElementById('stockImportPreview').style.display='none';
+  document.getElementById('stockImportBtn').disabled=true;
+  document.getElementById('stockImportFile').value='';
+  openModal('stockImportModal');
+};
+
+window.handleStockFileDrop = function(e) { e.preventDefault();e.currentTarget.classList.remove('drag');handleFileForImport(e.dataTransfer.files[0],'stock'); };
+window.handleStockFileSelect = function(e) { handleFileForImport(e.target.files[0],'stock'); };
+
+window.doStockImport = async function() {
+  if(!_importRows.length) return;
+  loading(true,'Import Stock...');
+  try {
+    for(const r of _importRows) {
+      await addDoc(collection(db,'stock'),{...r,type:r.type||STOCK_TAB.toLowerCase(),createdBy:CU.username,createdAt:serverTimestamp()});
+    }
+    toast(`✅ Import ${_importRows.length} ລາຍການ`);
+    closeModal('stockImportModal'); loadStockPage();
+  }catch(e){toast('❌ '+e.message);}finally{loading(false);}
+};
+
+// ============================================================
+// MASTER DATA PAGE
+// ============================================================
+window.switchMasterTab = function(tab) {
+  MASTER_TAB = tab;
+  document.getElementById('btnMasterSemi').style.cssText = tab==='semi'?'background:rgba(255,255,255,.25);color:#fff;border:2px solid rgba(255,255,255,.6)':'background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);border:2px solid rgba(255,255,255,.3)';
+  document.getElementById('btnMasterPlan').style.cssText = tab==='plan'?'background:rgba(255,255,255,.25);color:#fff;border:2px solid rgba(255,255,255,.6)':'background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);border:2px solid rgba(255,255,255,.3)';
+  document.getElementById('masterModeSub').textContent = tab==='semi'?'Semi Code Master':'Master Plan';
+  document.getElementById('btnMasterAdd').style.display=['admin','manager'].includes(CU.role)?'':'none';
+  loadMasterPage();
+};
+
+window.loadMasterPage = async function() {
+  const col = MASTER_TAB==='semi'?'semi_codes':'master_plan';
+  loading(true,'ໂຫຼດ Master Data...');
+  try {
+    const snap = await getDocs(collection(db,col));
+    _masterData=[]; snap.forEach(d=>_masterData.push({id:d.id,...d.data()}));
+    _masterFiltered=[..._masterData];
+    _masterPage=1;
+    renderMasterTable();
+  }catch(e){toast('❌ '+e.message);}finally{loading(false);}
+};
+
+function renderMasterTable() {
+  const start=(_masterPage-1)*PAGE_SIZE;
+  const rows=_masterFiltered.slice(start,start+PAGE_SIZE);
+  const thead=document.getElementById('masterThead');
+  const tbody=document.getElementById('masterTbody');
+  const canW=['admin','manager'].includes(CU.role);
+
+  if(MASTER_TAB==='semi') {
+    thead.innerHTML=`<tr><th>#</th><th>Semi Code</th><th>ຊື່ (ລາວ)</th><th>ຊື່ (EN)</th><th>ພະແນກ</th><th>ມູນຄ່າ</th>${canW?'<th>Action</th>':''}</tr>`;
+    tbody.innerHTML=rows.length?rows.map((r,i)=>`<tr>
+      <td>${start+i+1}</td><td><b>${r.semi_code||'—'}</b></td><td>${r.name_lao||r.name||'—'}</td><td>${r.name_en||'—'}</td>
+      <td><span class="badge" style="background:${DEPT_COLORS[r.department]||'#6b7280'}22;color:${DEPT_COLORS[r.department]||'#6b7280'}">${r.department||'—'}</span></td>
+      <td>${fmtNum(r.cost)}</td>
+      ${canW?`<td class="tbl-actions"><button class="btn btn-gray btn-sm" onclick="editMasterRow('${r.id}')">✏️</button><button class="btn btn-danger btn-sm" onclick="deleteMasterRow('${r.id}')">🗑️</button></td>`:''}
+    </tr>`).join(''):'<tr class="empty-row"><td colspan="7">ບໍ່ມີຂໍ້ມູນ</td></tr>';
+  } else {
+    thead.innerHTML=`<tr><th>#</th><th>Semi Code</th><th>ຊື່ສິນຄ້າ</th><th>ພະແນກ</th><th>Plan Qty</th><th>Actual Qty</th><th>ໜ່ວຍ</th><th>% Achieve</th>${canW?'<th>Action</th>':''}</tr>`;
+    tbody.innerHTML=rows.length?rows.map((r,i)=>{
+      const ach=r.plan_qty>0?((r.actual_qty||0)/r.plan_qty*100).toFixed(1):0;
+      return`<tr>
+        <td>${start+i+1}</td><td>${r.semi_code||'—'}</td><td><b>${r.name||'—'}</b></td>
+        <td><span class="badge" style="background:${DEPT_COLORS[r.department]||'#6b7280'}22;color:${DEPT_COLORS[r.department]||'#6b7280'}">${r.department||'—'}</span></td>
+        <td><b>${fmtNum(r.plan_qty)}</b></td><td>${fmtNum(r.actual_qty)}</td><td>${r.unit||'ຊິ້ນ'}</td>
+        <td><span class="badge ${parseFloat(ach)>=90?'b-green':parseFloat(ach)>=70?'b-yellow':'b-red'}">${ach}%</span></td>
+        ${canW?`<td class="tbl-actions"><button class="btn btn-gray btn-sm" onclick="editMasterRow('${r.id}')">✏️</button><button class="btn btn-danger btn-sm" onclick="deleteMasterRow('${r.id}')">🗑️</button></td>`:''}
+      </tr>`;}).join(''):'<tr class="empty-row"><td colspan="9">ບໍ່ມີຂໍ້ມູນ</td></tr>';
+  }
+  document.getElementById('masterRecordCount').textContent=`📊 ${_masterFiltered.length} ລາຍການ`;
+  document.getElementById('btnMasterAdd').style.display=canW?'':'none';
+  renderPagination('masterPagBar',_masterFiltered.length,_masterPage,(p)=>{ _masterPage=p; renderMasterTable(); });
+}
+
+window.filterMasterTable = function() {
+  const s=document.getElementById('masterSearch').value.toLowerCase();
+  _masterFiltered=_masterData.filter(r=>!s||JSON.stringify(r).toLowerCase().includes(s));
+  _masterPage=1; renderMasterTable();
+};
+
+window.openMasterAddModal = function() {
+  _editId=null;
+  const isSemi=MASTER_TAB==='semi';
+  document.getElementById('masterModalTitle').textContent=`➕ ເພີ່ມ ${isSemi?'Semi Code':'Master Plan'}`;
+  document.getElementById('masterFormFields').innerHTML=isSemi?`
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Semi Code<span class="req">*</span></label><input type="text" class="form-control" id="mf_semi"></div>
+      <div class="form-group"><label class="form-label">ພະແນກ<span class="req">*</span></label><select class="form-control" id="mf_dept">${DEPTS.map(d=>`<option>${d}</option>`).join('')}</select></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">ຊື່ (ລາວ)<span class="req">*</span></label><input type="text" class="form-control" id="mf_name_lo"></div>
+      <div class="form-group"><label class="form-label">ຊື່ (EN)</label><input type="text" class="form-control" id="mf_name_en"></div>
+    </div>
+    <div class="form-group"><label class="form-label">ມູນຄ່າ (ກີບ)</label><input type="number" class="form-control" id="mf_cost" placeholder="0"></div>`:`
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Semi Code</label><input type="text" class="form-control" id="mf_semi"></div>
+      <div class="form-group"><label class="form-label">ຊື່ສິນຄ້າ<span class="req">*</span></label><input type="text" class="form-control" id="mf_name"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">ພະແນກ<span class="req">*</span></label><select class="form-control" id="mf_dept">${DEPTS.map(d=>`<option>${d}</option>`).join('')}</select></div>
+      <div class="form-group"><label class="form-label">ໜ່ວຍ</label><input type="text" class="form-control" id="mf_unit" value="ຊິ້ນ"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Plan Qty<span class="req">*</span></label><input type="number" class="form-control" id="mf_plan" placeholder="0"></div>
+      <div class="form-group"><label class="form-label">Actual Qty</label><input type="number" class="form-control" id="mf_actual" placeholder="0"></div>
+    </div>`;
+  document.getElementById('masterModalMsg').innerHTML='';
+  openModal('masterModal');
+};
+
+window.editMasterRow = function(id) {
+  const r=_masterData.find(x=>x.id===id); if(!r) return;
+  _editId=id; openMasterAddModal();
+  document.getElementById('masterModalTitle').textContent='✏️ ແກ້ໄຂ';
+  setTimeout(()=>{
+    if(MASTER_TAB==='semi'){
+      document.getElementById('mf_semi').value=r.semi_code||'';
+      document.getElementById('mf_dept').value=r.department||'';
+      document.getElementById('mf_name_lo').value=r.name_lao||r.name||'';
+      document.getElementById('mf_name_en').value=r.name_en||'';
+      document.getElementById('mf_cost').value=r.cost||0;
+    } else {
+      document.getElementById('mf_semi').value=r.semi_code||'';
+      document.getElementById('mf_name').value=r.name||'';
+      document.getElementById('mf_dept').value=r.department||'';
+      document.getElementById('mf_unit').value=r.unit||'ຊິ້ນ';
+      document.getElementById('mf_plan').value=r.plan_qty||0;
+      document.getElementById('mf_actual').value=r.actual_qty||0;
+    }
+  },100);
+};
+
+window.saveMasterRow = async function() {
+  const isSemi=MASTER_TAB==='semi';
+  const col=isSemi?'semi_codes':'master_plan';
+  let data;
+  if(isSemi){
+    data={semi_code:document.getElementById('mf_semi')?.value.trim(),department:document.getElementById('mf_dept')?.value,name_lao:document.getElementById('mf_name_lo')?.value.trim(),name_en:document.getElementById('mf_name_en')?.value.trim(),cost:parseFloat(document.getElementById('mf_cost')?.value)||0};
+    if(!data.semi_code||!data.name_lao){toast('⚠️ ໃສ່ຂໍ້ມູນໃຫ້ຄົບ');return;}
+  } else {
+    data={semi_code:document.getElementById('mf_semi')?.value.trim(),name:document.getElementById('mf_name')?.value.trim(),department:document.getElementById('mf_dept')?.value,unit:document.getElementById('mf_unit')?.value||'ຊິ້ນ',plan_qty:parseInt(document.getElementById('mf_plan')?.value)||0,actual_qty:parseInt(document.getElementById('mf_actual')?.value)||0};
+    if(!data.name){toast('⚠️ ໃສ່ຊື່ໃຫ້ຄົບ');return;}
+  }
+  data.updatedBy=CU.username; data.updatedAt=serverTimestamp();
+  loading(true);
+  try{
+    if(_editId){await updateDoc(doc(db,col,_editId),data);toast('✅ ແກ້ໄຂສຳເລັດ');}
+    else{data.createdBy=CU.username;data.createdAt=serverTimestamp();await addDoc(collection(db,col),data);toast('✅ ເພີ່ມສຳເລັດ');}
+    closeModal('masterModal'); loadMasterPage();
+  }catch(e){toast('❌ '+e.message);}finally{loading(false);}
+};
+
+window.deleteMasterRow = function(id) {
+  confirmAction('ລົບລາຍການນີ້?', async()=>{
+    await deleteDoc(doc(db,MASTER_TAB==='semi'?'semi_codes':'master_plan',id));
+    toast('🗑️ ລົບສຳເລັດ'); loadMasterPage();
+  });
+};
+
+window.exportMasterCSV = function() {
+  const headers=MASTER_TAB==='semi'?['semi_code','name_lao','name_en','department','cost']:['semi_code','name','department','plan_qty','actual_qty','unit'];
+  let csv='\uFEFF'+headers.join(',')+'\n';
+  csv+=_masterFiltered.map(r=>headers.map(h=>`"${r[h]??''}"`).join(',')).join('\n');
+  downloadFile(csv,`master_${MASTER_TAB}_${today()}.csv`,'text/csv');
+};
+
+window.exportMasterExcel = function() {
+  const headers=MASTER_TAB==='semi'?['semi_code','name_lao','name_en','department','cost']:['semi_code','name','department','plan_qty','actual_qty','unit'];
+  const data=[headers,..._masterFiltered.map(r=>headers.map(h=>r[h]??''))];
+  const ws=XLSX.utils.aoa_to_sheet(data);
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Master');
+  XLSX.writeFile(wb,`master_${MASTER_TAB}_${today()}.xlsx`);
+};
+
+window.openMasterImportModal = function() {
+  _importRows=[];
+  document.getElementById('masterImportPreview').style.display='none';
+  document.getElementById('masterImportBtn').disabled=true;
+  document.getElementById('masterImportFile').value='';
+  openModal('masterImportModal');
+};
+
+window.handleMasterFileDrop = function(e){e.preventDefault();e.currentTarget.classList.remove('drag');handleFileForImport(e.dataTransfer.files[0],'master');};
+window.handleMasterFileSelect = function(e){handleFileForImport(e.target.files[0],'master');};
+
+window.doMasterImport = async function() {
+  if(!_importRows.length) return;
+  const col=MASTER_TAB==='semi'?'semi_codes':'master_plan';
+  loading(true,'Import...');
+  try{
+    for(const r of _importRows) await addDoc(collection(db,col),{...r,createdBy:CU.username,createdAt:serverTimestamp()});
+    toast(`✅ Import ${_importRows.length} ລາຍການ`);
+    closeModal('masterImportModal'); loadMasterPage();
+  }catch(e){toast('❌ '+e.message);}finally{loading(false);}
+};
+
+// ============================================================
+// USERS PAGE
+// ============================================================
+window.loadUsers = async function() {
+  loading(true);
+  try {
+    const snap=await getDocs(collection(db,'users'));
+    const users=[]; snap.forEach(d=>users.push({id:d.id,...d.data()}));
+    const tbody=document.getElementById('usersTbody');
+    const ROLE_BADGE={admin:'b-admin',manager:'b-manager',leader:'b-leader',user:'b-user'};
+    tbody.innerHTML=users.length?users.map((u,i)=>`<tr>
+      <td>${i+1}</td><td><b>${u.username||'—'}</b></td><td>${u.name||'—'}</td><td>${u.email||'—'}</td>
+      <td><span class="badge ${ROLE_BADGE[u.role]||'b-user'}">${u.role?.toUpperCase()}</span></td>
+      <td>${u.department||'ALL'}</td>
+      <td style="font-size:11px">${formatPermSummary(u.permissions)}</td>
+      <td class="tbl-actions">
+        <button class="btn btn-gray btn-sm" onclick="openUserModal('${u.id}')">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">🗑️</button>
+      </td>
+    </tr>`).join(''):'<tr class="empty-row"><td colspan="8">ບໍ່ມີ User</td></tr>';
+  }catch(e){toast('❌ '+e.message);}finally{loading(false);}
+};
+
+function formatPermSummary(perms) {
+  if(!perms) return '—';
+  return Object.entries(perms).filter(([,v])=>v&&(v.read||v.write)).map(([k])=>k).join(', ')||'—';
+}
+
+window.openUserModal = async function(id) {
+  _editId=id;
+  document.getElementById('userModalTitle').textContent=id?'✏️ ແກ້ໄຂ User':'➕ ເພີ່ມ User';
+  document.getElementById('uId').value=id||'';
+  document.getElementById('uUser').value='';
+  document.getElementById('uName').value='';
+  document.getElementById('uEmail').value='';
+  document.getElementById('uPass').value='';
+  document.getElementById('uRole').value='user';
+  document.getElementById('uDept').value='ALL';
+  buildPermissions({});
+
+  if(id) {
+    try {
+      const snap=await getDoc(doc(db,'users',id));
+      if(snap.exists()) {
+        const u=snap.data();
+        document.getElementById('uUser').value=u.username||'';
+        document.getElementById('uName').value=u.name||'';
+        document.getElementById('uEmail').value=u.email||'';
+        document.getElementById('uRole').value=u.role||'user';
+        document.getElementById('uDept').value=u.department||'ALL';
+        buildPermissions(u.permissions||{});
       }
+    }catch(e){}
+  }
+  openModal('userModal');
+};
 
-      btn.disabled = true;
-      btn.innerHTML = '<span class="loading"></span>';
+function buildPermissions(perms) {
+  const mods=['dashboard','ng','stock','master'];
+  const actions=['read','write','edit','delete'];
+  document.getElementById('uPermissions').innerHTML=mods.map(m=>`
+    <div style="margin-bottom:10px">
+      <div style="font-size:12px;font-weight:700;color:var(--g700);margin-bottom:4px;text-transform:uppercase">${m}</div>
+      <div class="perm-grid">${actions.map(a=>`
+        <label class="perm-chk">
+          <input type="checkbox" id="perm_${m}_${a}" ${perms[m]?.[a]?'checked':''}>
+          ${a}
+        </label>`).join('')}
+      </div>
+    </div>`).join('');
+}
 
-      try {
-        const q = query(collection(db, 'users'), where('username', '==', username));
-        const snap = await getDocs(q);
-        if (snap.empty) throw new Error('not_found');
+function getPermissions() {
+  const mods=['dashboard','ng','stock','master'];
+  const actions=['read','write','edit','delete'];
+  const perms={};
+  mods.forEach(m=>{
+    perms[m]={};
+    actions.forEach(a=>{ perms[m][a]=document.getElementById(`perm_${m}_${a}`)?.checked||false; });
+  });
+  return perms;
+}
 
-        const userDoc = snap.docs[0];
-        const userData = userDoc.data();
+window.saveUser = async function() {
+  const id=document.getElementById('uId').value;
+  const username=document.getElementById('uUser').value.trim();
+  const name=document.getElementById('uName').value.trim();
+  const email=document.getElementById('uEmail').value.trim();
+  const pass=document.getElementById('uPass').value;
+  const role=document.getElementById('uRole').value;
+  const dept=document.getElementById('uDept').value;
+  const permissions=getPermissions();
+  if(!username||!name||!email){toast('⚠️ ໃສ່ຂໍ້ມູນໃຫ້ຄົບ');return;}
+  loading(true);
+  try{
+    if(id){
+      const data={username,name,email,role,department:dept,permissions,updatedBy:CU.username,updatedAt:serverTimestamp()};
+      if(pass) data.passwordHint=pass;
+      await updateDoc(doc(db,'users',id),data);
+      toast('✅ ແກ້ໄຂສຳເລັດ');
+    } else {
+      if(!pass){toast('⚠️ ຕ້ອງໃສ່ Password ສຳລັບ User ໃໝ່');loading(false);return;}
+      const cred=await createUserWithEmailAndPassword(auth,email,pass);
+      await setDoc(doc(db,'users',cred.user.uid),{username,name,email,role,department:dept,permissions,createdBy:CU.username,createdAt:serverTimestamp()});
+      toast('✅ ສ້າງ User ສຳເລັດ');
+    }
+    closeModal('userModal'); loadUsers();
+  }catch(e){toast('❌ '+e.message);}finally{loading(false);}
+};
 
-        await signInWithEmailAndPassword(auth, userData.email, password);
+window.deleteUser = function(id) {
+  if(id===CU.id){toast('⚠️ ບໍ່ສາມາດລົບຕົນເອງ');return;}
+  confirmAction('ລົບ User ນີ້?', async()=>{
+    await deleteDoc(doc(db,'users',id)); toast('🗑️ ລົບ User ສຳເລັດ'); loadUsers();
+  });
+};
 
-        sessionStorage.setItem('epl_user', JSON.stringify({
-          id: userDoc.id,
-          username: userData.username,
-          name: userData.name,
-          role: userData.role,
-          department: userData.department,
-          permissions: userData.permissions || {},
-          departmentAccess: userData.departmentAccess || {}
-        }));
+// ============================================================
+// IMPORT HELPER
+// ============================================================
+function handleFileForImport(file, type) {
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const data=new Uint8Array(e.target.result);
+    const wb=XLSX.read(data,{type:'array'});
+    const ws=wb.Sheets[wb.SheetNames[0]];
+    const rows=XLSX.utils.sheet_to_json(ws,{defval:''});
+    if(!rows.length){toast('⚠️ ບໍ່ພົບຂໍ້ມູນ');return;}
+    _importRows=rows;
+    const previewId=type==='dept'?'deptImportPreview':type==='stock'?'stockImportPreview':'masterImportPreview';
+    const btnId=type==='dept'?'deptImportBtn':type==='stock'?'stockImportBtn':'masterImportBtn';
+    const headers=Object.keys(rows[0]);
+    const preview=document.getElementById(previewId);
+    preview.style.display='block';
+    preview.innerHTML=`
+      <div style="font-size:12px;font-weight:600;margin-bottom:6px;color:var(--g700)">${rows.length} ແຖວ — Preview 5 ແຖວທຳອິດ</div>
+      <div class="tbl-wrap" style="max-height:180px;overflow:auto;border:1px solid var(--g300);border-radius:8px">
+        <table><thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead>
+        <tbody>${rows.slice(0,5).map(r=>`<tr>${headers.map(h=>`<td>${r[h]??''}</td>`).join('')}</tr>`).join('')}</tbody>
+        </table></div>`;
+    document.getElementById(btnId).disabled=false;
+  };
+  reader.readAsArrayBuffer(file);
+}
 
-        alertEl.className = 'alert success';
-        alertEl.textContent = texts[lang].ok;
-        setTimeout(() => window.location.href = 'home.html', 600);
+// ============================================================
+// PAGINATION
+// ============================================================
+function renderPagination(barId, total, current, onPage) {
+  const bar=document.getElementById(barId);
+  if(!bar) return;
+  const pages=Math.ceil(total/PAGE_SIZE);
+  if(pages<=1){bar.style.display='none';return;}
+  bar.style.display='flex';
+  let html=`<button class="pag-btn" ${current<=1?'disabled':''} onclick="(${onPage})(${current-1})">‹</button>`;
+  for(let i=1;i<=pages;i++){
+    if(pages>7&&Math.abs(i-current)>2&&i!==1&&i!==pages){if(i===current-3||i===current+3)html+='<span style="color:var(--g500)">...</span>';continue;}
+    html+=`<button class="pag-btn ${i===current?'active':''}" onclick="(${onPage})(${i})">${i}</button>`;
+  }
+  html+=`<button class="pag-btn" ${current>=pages?'disabled':''} onclick="(${onPage})(${current+1})">›</button>`;
+  html+=`<span class="pag-info">${total} ລາຍການ</span>`;
+  bar.innerHTML=html;
+}
 
-      } catch(err) {
-        alertEl.className = 'alert error';
-        alertEl.textContent = texts[lang].err2;
-        btn.disabled = false;
-        btn.innerHTML = `<span>🔐</span><span>${texts[lang].btn}</span>`;
-      }
-    };
+// ============================================================
+// EXPORT/PRINT HELPERS
+// ============================================================
+function downloadFile(content, filename, mime) {
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([content],{type:mime+';charset=utf-8;'}));
+  a.download=filename; a.click();
+}
 
-    document.addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
-  </script>
+function printTable(title, headers, rows) {
+  const now=new Date().toLocaleString('lo-LA');
+  const total=rows.length;
+  let h=`<div style="position:fixed;inset:0;background:#fff;z-index:99999;padding:20px;overflow:auto" id="printArea">
+    <div style="display:flex;justify-content:space-between;margin-bottom:16px">
+      <div><div style="font-size:20px;font-weight:800">${title}</div><div style="font-size:13px;color:#6b7280">${total} ລາຍການ | ${now}</div></div>
+      <div style="display:flex;gap:8px" class="print-no">
+        <button onclick="document.getElementById('printArea').remove()" style="padding:6px 14px;border:1px solid #d1d5db;border-radius:6px;cursor:pointer">✕ ປິດ</button>
+        <button onclick="window.print()" style="padding:6px 14px;border:none;border-radius:6px;cursor:pointer;background:#059669;color:#fff">🖨️ ພິມ</button>
+      </div>
+    </div>
+    <table style="width:100%;border-collapse:collapse;font-size:12px">
+      <thead><tr>${headers.map(h=>`<th style="background:#f3f4f6;padding:7px 10px;text-align:left;border:1px solid #d1d5db;font-size:11px">${h}</th>`).join('')}</tr></thead>
+      <tbody>${rows.map((r,i)=>`<tr style="background:${i%2?'#f9fafb':'#fff'}">${r.map(c=>`<td style="padding:6px 10px;border:1px solid #e5e7eb">${c??''}</td>`).join('')}</tr>`).join('')}</tbody>
+    </table>
+  </div>`;
+  const old=document.getElementById('printArea'); if(old) old.remove();
+  document.body.insertAdjacentHTML('beforeend',h);
+  setTimeout(()=>window.print(),300);
+}
+
+window.exportDashExcel = function() {
+  if(!_dashCache) return;
+  const {stocks,ngs}=_dashCache;
+  const wb=XLSX.utils.book_new();
+  // Stock sheet
+  const sHeaders=['date','type','semi_code','name','department','qty','cost','zone'];
+  const sData=[sHeaders,...stocks.map(r=>sHeaders.map(h=>r[h]??''))];
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sData),'Stock');
+  // NG sheet
+  const nHeaders=['date','department','item','defect_type','qty','cause'];
+  const nData=[nHeaders,...ngs.map(r=>nHeaders.map(h=>r[h]??''))];
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(nData),'NG');
+  XLSX.writeFile(wb,`dashboard_export_${today()}.xlsx`);
+};
+
+// ============================================================
+// AUTO LOGIN CHECK
+// ============================================================
+const saved=sessionStorage.getItem('epl_user');
+if(saved) { CU=JSON.parse(saved); initApp(); }
+else { document.getElementById('loginPage').style.display='flex'; }
+
+// Date display
+document.getElementById('topDate').textContent=new Date().toLocaleDateString('lo-LA');
+
+</script>
 </body>
 </html>
